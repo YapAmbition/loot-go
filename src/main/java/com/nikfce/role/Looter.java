@@ -1,13 +1,15 @@
 package com.nikfce.role;
 
 import com.nikfce.action.*;
-import com.nikfce.action.skill.NormalAttackSkill;
+import com.nikfce.action.skill.AS_NormalAttack;
 import com.nikfce.stage.RoundContext;
 import com.nikfce.stage.RoundLifecycle;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @author shenzhencheng 2022/3/1
@@ -16,13 +18,13 @@ public class Looter implements Combative {
 
     public final String name ;
     // 基础属性
-    private final Properties basicProperties = new Properties(false);
+    protected final Properties basicProperties = new Properties(false);
     // 技能影响的属性值
-    private final Properties effectProperties = new Properties(false);
+    protected final Properties effectProperties = new Properties(false);
     // 临时属性
-    private final Properties tmpProperties = new Properties(false);
+    protected final Properties tmpProperties = new Properties(false);
 
-    private final List<Skill> skillList = new ArrayList<>();
+    protected final List<Skill> skillList = new ArrayList<>();
 
     public Looter(String name) {
         this(name, null);
@@ -37,8 +39,8 @@ public class Looter implements Combative {
     /**
      * 添加默认技能
      */
-    private void initSkill() {
-        skillList.add(new NormalAttackSkill());
+    protected void initSkill() {
+        skillList.add(new AS_NormalAttack());
     }
 
     /**
@@ -52,6 +54,10 @@ public class Looter implements Combative {
         return currentHp() <= 0;
     }
 
+    public double currentStrength() {
+        return basicProperties.strength + effectProperties.strength + tmpProperties.strength;
+    }
+
     public double currentSpeed() {
         return basicProperties.speed + effectProperties.speed + tmpProperties.speed;
     }
@@ -60,12 +66,20 @@ public class Looter implements Combative {
         return basicProperties.hp + effectProperties.hp + tmpProperties.hp;
     }
 
+    public double currentMaxHp() {
+        return basicProperties.maxHp + effectProperties.maxHp + tmpProperties.maxHp;
+    }
+
     public double currentLuck() {
         return basicProperties.luck + effectProperties.luck + tmpProperties.luck;
     }
 
     public double currentAttack() {
         return basicProperties.attack + effectProperties.attack + tmpProperties.attack;
+    }
+
+    public double basicDefence() {
+        return basicProperties.defence;
     }
 
     @Override
@@ -79,6 +93,8 @@ public class Looter implements Combative {
 
         SkillContext preSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
         List<Looter> targets = activeSKill.selectTargets(preSkillContext);
+
+        System.out.println(name + "决定对" + String.join(",", targets.stream().map(i -> i.name).collect(Collectors.toList())) + "使用" + activeSKill.name());
 
         SkillContext actualSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, targets, null);
         passiveSkillAffect(actualSkillContext);
@@ -95,6 +111,8 @@ public class Looter implements Combative {
 
     @Override
     public void beAttack(Looter attacker, Effect effect) {
+        System.out.println(name + "受到了来自" + attacker.name + "的攻击");
+
         SkillContext skillContext = new SkillContext(RoundLifecycle.BEFORE_BE_ATTACK, this, Collections.singletonList(attacker), effect);
         passiveSkillAffect(skillContext);
 
@@ -104,7 +122,9 @@ public class Looter implements Combative {
         SkillContext actualSkillContext = new SkillContext(RoundLifecycle.AFTER_BE_ATTACK, this, Collections.singletonList(attacker), actualEffect);
         passiveSkillAffect(actualSkillContext);
 
-        // 回调攻击者的攻击结束接口,并高速它实际造成的伤害是多少
+        System.out.println(name + "最终受到" + actualEffect.properties.hp + "点伤害");
+
+        // 回调攻击者的攻击结束接口,并告诉它实际造成的伤害是多少
         attacker.attackFinish(this, actualEffect);
     }
 
@@ -136,12 +156,16 @@ public class Looter implements Combative {
      * 选择一个主动技能
      */
     private ActiveSKill choiceActiveSkill() {
+        List<ActiveSKill> candidate = new ArrayList<>();
         for (Skill skill : skillList) {
             if (skill instanceof ActiveSKill) {
-                return (ActiveSKill) skill;
+                candidate.add((ActiveSKill)skill);
             }
         }
-        throw new RuntimeException("找不到任何主动技能,战斗失败");
+        if (candidate.isEmpty()) {
+            throw new RuntimeException("找不到任何主动技能,战斗失败");
+        }
+        return candidate.get(new Random().nextInt(candidate.size()));
     }
 
     /**

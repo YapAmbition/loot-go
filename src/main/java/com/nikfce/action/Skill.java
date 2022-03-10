@@ -10,4 +10,9 @@ public interface Skill {
      */
     boolean canUse(SkillContext skillContext);
 
+    /**
+     * 技能名
+     */
+    String name();
+
 }

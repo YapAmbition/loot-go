@@ -26,14 +26,18 @@ public class Battle {
     }
 
     public void battleStart() {
+        System.out.println("战斗开始!");
         BattleFinishEnum battleFinishEnumState = battleFinishState();
         while (!battleFinishEnumState.battleFinish) {
             roundCount ++;
             if (roundCount > 999) {
                 throw new RuntimeException("回合数超限,一定是出了什么问题");
             }
+            System.out.println("------------------------------");
+            System.out.println("开始第" + roundCount + "回合");
             // 找到下次行动的角色
             Looter currentLooter = actionPlan.next();
+            System.out.println("当前攻击的角色为:" + currentLooter.name);
             // 角色
             RoundContext roundContext;
             if (isPlayer(currentLooter)) {
@@ -42,10 +46,21 @@ public class Battle {
                 roundContext = new RoundContext(roundCount, players);
             }
             currentLooter.attack(roundContext);
+            checkLooterStatus();
 
             battleFinishEnumState = battleFinishState();
         }
+        System.out.println("第" + roundCount + "回合,战斗结束");
         handleBattleFinish(battleFinishEnumState);
+    }
+
+    private void checkLooterStatus() {
+        for (Looter looter : players) {
+            System.out.printf("[%s] : (%s/%s)%n", looter.name, looter.currentHp(), looter.currentMaxHp());
+        }
+        for (Looter looter : enemies) {
+            System.out.printf("[%s] : (%s/%s)%n", looter.name, looter.currentHp(), looter.currentMaxHp());
+        }
     }
 
     /**

@@ -122,7 +122,7 @@ public class BottleActionPlan implements ActionPlan {
      * 每个looter都填充自己的瓶子
      */
     private void fillBottle() {
-        fillValueMap.replaceAll((looter, fillValue) -> fillValue + (looter.isDead() ? 0 : looter.currentSpeed()));
+        fillValueMap.replaceAll((looter, fillValue) -> fillValue + (looter.isDead() ? 0 : Math.max(looter.currentSpeed(), 0)));
     }
 
     /**

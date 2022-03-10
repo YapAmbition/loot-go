@@ -47,18 +47,17 @@ public class Properties {
     }
 
     /**
-     * 1力量 = 1防御 + 4攻击
+     * 1力量 = 3攻击
      */
     private void applyStrength(double strength) {
-        this.defence += strength * 1;
-        this.attack += strength * 4;
+        this.attack += strength * 3;
     }
 
     /**
-     * 1体质 = 2防御 + 5血量
+     * 1体质 = 1防御 + 5血量
      */
     private void applyPhysique(double physique) {
-        this.defence += physique * 2;
+        this.defence += physique * 1;
         this.maxHp += physique * 5;
         this.hp += physique * 5;
     }
@@ -91,16 +90,18 @@ public class Properties {
      * 单纯的属性merge,不做属性应用
      */
     public void mergeProperties(Properties properties) {
-        this.physique += properties.physique;
-        this.strength += properties.strength;
-        this.agility += properties.agility;
-        this.maxHp += properties.maxHp;
-        this.hp += properties.hp;
-        this.attack += properties.attack;
-        this.defence += properties.defence;
-        this.strike += properties.strike;
-        this.speed += properties.speed;
-        this.luck += properties.luck;
+        if (properties != null) {
+            this.physique += properties.physique;
+            this.strength += properties.strength;
+            this.agility += properties.agility;
+            this.maxHp += properties.maxHp;
+            this.hp += properties.hp;
+            this.attack += properties.attack;
+            this.defence += properties.defence;
+            this.strike += properties.strike;
+            this.speed += properties.speed;
+            this.luck += properties.luck;
+        }
     }
 
     public void clear() {
