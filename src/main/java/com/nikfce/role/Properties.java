@@ -104,6 +104,47 @@ public class Properties {
         }
     }
 
+    /**
+     * 返回当前属性的非0值变动
+     */
+    public String calChangeValueLog() {
+        StringBuilder sb = new StringBuilder();
+        if (physique != 0) {
+            sb.append("physique: ").append(physique).append(";");
+        }
+        if (strength != 0) {
+            sb.append("strength: ").append(strength).append(";");
+        }
+        if (agility != 0) {
+            sb.append("agility: ").append(agility).append(";");
+        }
+        if (maxHp != 0) {
+            sb.append("maxHp: ").append(maxHp).append(";");
+        }
+        if (hp != 0) {
+            sb.append("hp: ").append(hp).append(";");
+        }
+        if (attack != 0) {
+            sb.append("attack: ").append(attack).append(";");
+        }
+        if (defence != 0) {
+            sb.append("defence: ").append(defence).append(";");
+        }
+        if (strike != 0) {
+            sb.append("strike: ").append(strike).append(";");
+        }
+        if (speed != 0) {
+            sb.append("speed: ").append(speed).append(";");
+        }
+        if (luck != 0) {
+            sb.append("luck: ").append(luck).append(";");
+        }
+        if (sb.length() > 0) {
+            return sb.toString();
+        }
+        return "未发生任何变化";
+    }
+
     public void clear() {
         physique = 0;
         strength = 0;

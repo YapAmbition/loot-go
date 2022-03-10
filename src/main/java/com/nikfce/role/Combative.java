@@ -31,6 +31,13 @@ public interface Combative {
     void attackFinish(Looter target, Effect actualEffect);
 
     /**
+     * 受到了强化
+     * @param from 谁强化了你
+     * @param effect 强化的内容
+     */
+    void intensified(Looter from, Effect effect);
+
+    /**
      * 回合结束
      */
     void roundEnd(RoundContext roundContext);

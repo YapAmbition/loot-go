@@ -1,10 +1,7 @@
 package com.nikfce.stage;
 
 import com.nikfce.role.Looter;
-import com.nikfce.role.hero.LiKun;
-import com.nikfce.role.hero.XieLi;
-import com.nikfce.role.hero.YaQiang;
-import com.nikfce.role.hero.YangPang;
+import com.nikfce.role.hero.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,11 +12,11 @@ import java.util.List;
 public class Stage {
 
     private static List<Looter> createPlayers() {
-        return Collections.singletonList(new YangPang());
+        return Collections.singletonList(new YaQiang());
     }
 
     private static List<Looter> createEnemies() {
-        return Collections.singletonList(new YaQiang());
+        return Collections.singletonList(new TaoZi());
     }
 
     public static void main(String[] args) {

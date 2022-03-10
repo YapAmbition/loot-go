@@ -87,21 +87,35 @@ public class Looter implements Combative {
         tmpProperties.clear();
     }
 
+    /**
+     * 先选择一个技能
+     * 让技能去选择待攻击的目标
+     * 计算技能能造成的伤害(Effect)
+     * 如果是强化型技能
+     *      自身的被动技能不生效,直接调用自己的intensified(),表示受到了强化
+     * 如果不是强化型技能
+     *      触发被动技能生效
+     *      调用敌人的beAttack(),表示敌人被攻击了
+     * 回合结束
+     */
     @Override
     public void attack(RoundContext roundContext) {
         ActiveSKill activeSKill = choiceActiveSkill();
-
         SkillContext preSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
         List<Looter> targets = activeSKill.selectTargets(preSkillContext);
 
-        System.out.println(name + "决定对" + String.join(",", targets.stream().map(i -> i.name).collect(Collectors.toList())) + "使用" + activeSKill.name());
+        System.out.println(name + "决定对" + targets.stream().map(i -> i.name).collect(Collectors.joining(",")) + "使用" + activeSKill.name());
 
         SkillContext actualSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, targets, null);
-        passiveSkillAffect(actualSkillContext);
-
-        Effect effect = activeSKill.handle(actualSkillContext);
-        for (Looter target : actualSkillContext.enemy) {
-            target.beAttack(this, effect);
+        if (activeSKill instanceof IntensifyActiveSkill) {
+            Effect effect = activeSKill.handle(actualSkillContext);
+            intensified(this, effect);
+        } else {
+            passiveSkillAffect(actualSkillContext);
+            Effect effect = activeSKill.handle(actualSkillContext);
+            for (Looter target : actualSkillContext.enemy) {
+                target.beAttack(this, effect);
+            }
         }
 
         roundEnd(roundContext);
@@ -132,6 +146,23 @@ public class Looter implements Combative {
     public void attackFinish(Looter target, Effect actualEffect) {
         SkillContext skillContext = new SkillContext(RoundLifecycle.AFTER_ATTACK, this, Collections.singletonList(target), actualEffect);
         passiveSkillAffect(skillContext);
+    }
+
+    /**
+     * 注意,血量是会超出上限的,如果超过了上限,需要进行扣除,扣除逻辑很简单,把basic,effect,tmp的properties的hp值设置为maxHp即可
+     * @param from 谁强化了你
+     * @param effect 强化的内容
+     */
+    @Override
+    public void intensified(Looter from, Effect effect) {
+        System.out.printf("来自%s的强化技能生效!%n", from.name);
+        System.out.println(effect.properties.calChangeValueLog());
+        effectProperties.mergeProperties(effect.properties);
+        if (currentHp() > currentMaxHp()) {
+            basicProperties.hp = basicProperties.maxHp;
+            effectProperties.hp = effectProperties.maxHp;
+            tmpProperties.hp = tmpProperties.maxHp;
+        }
     }
 
     /**
