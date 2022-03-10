@@ -50,4 +50,9 @@ public class AS_ReduceDimension implements ActiveSKill {
     public String name() {
         return "降维打击";
     }
+
+    @Override
+    public void roundEnd() {
+        target = null;
+    }
 }

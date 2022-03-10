@@ -44,4 +44,9 @@ public class IAS_Peach implements IntensifyActiveSkill {
     public String name() {
         return "桃";
     }
+
+    @Override
+    public void battleStart() {
+        canUseCount = 3;
+    }
 }

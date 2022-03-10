@@ -34,6 +34,8 @@ public class Stage {
                 boolean win = battle.battleStart();
                 if (win) {
                     heroMap.put(looter, heroMap.get(looter) + 1);
+                } else {
+                    heroMap.put(target, heroMap.get(target) + 1);
                 }
             }
         }
@@ -59,7 +61,8 @@ public class Stage {
     }
 
     public static void main(String[] args) {
-        oneVsOne(new LiKun(), new YangPang());
+//        oneVsOne(new LiKun(), new YangPang());
+        pointRace();
     }
 
 }

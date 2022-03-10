@@ -109,11 +109,17 @@ public class Looter implements Combative {
     public void battleStart() {
         effectProperties.clear();
         tmpProperties.clear();
+        for (Skill skill : skillList) {
+            skill.battleStart();
+        }
     }
 
     @Override
     public void roundStart(RoundContext roundContext) {
         tmpProperties.clear();
+        for (Skill skill : skillList) {
+            skill.roundStart();
+        }
     }
 
     /**
@@ -221,12 +227,18 @@ public class Looter implements Combative {
     @Override
     public void roundEnd(RoundContext roundContext) {
         tmpProperties.clear();
+        for (Skill skill : skillList) {
+            skill.roundEnd();
+        }
     }
 
     @Override
     public void battleEnd() {
         effectProperties.clear();
         tmpProperties.clear();
+        for (Skill skill : skillList) {
+            skill.battleEnd();
+        }
     }
 
     /**

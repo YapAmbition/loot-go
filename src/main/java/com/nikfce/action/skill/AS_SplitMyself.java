@@ -56,4 +56,9 @@ public class AS_SplitMyself implements ActiveSKill {
     public String name() {
         return "分则能成";
     }
+
+    @Override
+    public void roundEnd() {
+        target = null;
+    }
 }
