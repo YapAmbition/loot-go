@@ -19,9 +19,10 @@ public class YaQiang extends Looter {
                 .setPhysique(24)
                 .setStrength(18)
                 .setAgility(6)
-                .setHp(40)
-                .setMaxHp(40)
+                .setHp(20)
+                .setMaxHp(20)
                 .setAttack(6)
+                .setDodge(15)
                 .setApplyAttribute(true)
                 .build();
         this.basicProperties.mergeProperties(properties);

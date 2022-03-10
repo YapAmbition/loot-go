@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
  */
 public class Looter implements Combative {
 
+    private final Random random = new Random();
+
     public final String name ;
     // 基础属性
     protected final Properties basicProperties = new Properties(false);
@@ -33,6 +35,8 @@ public class Looter implements Combative {
     public Looter(String name, Properties properties) {
         this.name = name;
         this.basicProperties.mergeProperties(properties);
+        Properties allLooterBasicProperties = Properties.PropertiesBuilder.create().setMaxHp(200).setHp(200).build();
+        this.basicProperties.mergeProperties(allLooterBasicProperties);
         initSkill();
     }
 
@@ -70,6 +74,10 @@ public class Looter implements Combative {
         return basicProperties.maxHp + effectProperties.maxHp + tmpProperties.maxHp;
     }
 
+    public double currentDodge() {
+        return basicProperties.dodge + effectProperties.dodge + tmpProperties.dodge;
+    }
+
     public double currentLuck() {
         return basicProperties.luck + effectProperties.luck + tmpProperties.luck;
     }
@@ -100,7 +108,9 @@ public class Looter implements Combative {
      */
     @Override
     public void attack(RoundContext roundContext) {
-        ActiveSKill activeSKill = choiceActiveSkill();
+        SkillContext choiceSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
+        ActiveSKill activeSKill = choiceActiveSkill(choiceSkillContext);
+
         SkillContext preSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
         List<Looter> targets = activeSKill.selectTargets(preSkillContext);
 
@@ -130,16 +140,22 @@ public class Looter implements Combative {
         SkillContext skillContext = new SkillContext(RoundLifecycle.BEFORE_BE_ATTACK, this, Collections.singletonList(attacker), effect);
         passiveSkillAffect(skillContext);
 
-        // 计算并应用伤害,返回实际造成的伤害
-        Effect actualEffect = calAndApplyEffect(skillContext);
+        // 计算角色的闪避值,并进行闪避判定
+        double dodge = currentDodge();
+        if (random.nextInt(100) < dodge) {
+            System.out.printf("%s闪过了%s攻击,自己竟毫发未损!%n", name, attacker.name);
+        } else {
+            // 计算并应用伤害,返回实际造成的伤害
+            Effect actualEffect = calAndApplyEffect(skillContext);
 
-        SkillContext actualSkillContext = new SkillContext(RoundLifecycle.AFTER_BE_ATTACK, this, Collections.singletonList(attacker), actualEffect);
-        passiveSkillAffect(actualSkillContext);
+            SkillContext actualSkillContext = new SkillContext(RoundLifecycle.AFTER_BE_ATTACK, this, Collections.singletonList(attacker), actualEffect);
+            passiveSkillAffect(actualSkillContext);
 
-        System.out.println(name + "最终受到" + actualEffect.properties.hp + "点伤害");
+            System.out.println(name + "最终受到" + actualEffect.properties.hp + "点伤害");
 
-        // 回调攻击者的攻击结束接口,并告诉它实际造成的伤害是多少
-        attacker.attackFinish(this, actualEffect);
+            // 回调攻击者的攻击结束接口,并告诉它实际造成的伤害是多少
+            attacker.attackFinish(this, actualEffect);
+        }
     }
 
     @Override
@@ -186,10 +202,10 @@ public class Looter implements Combative {
     /**
      * 选择一个主动技能
      */
-    private ActiveSKill choiceActiveSkill() {
+    private ActiveSKill choiceActiveSkill(SkillContext skillContext) {
         List<ActiveSKill> candidate = new ArrayList<>();
         for (Skill skill : skillList) {
-            if (skill instanceof ActiveSKill) {
+            if (skill instanceof ActiveSKill && skill.canUse(skillContext)) {
                 candidate.add((ActiveSKill)skill);
             }
         }

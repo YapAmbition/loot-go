@@ -17,6 +17,7 @@ public class Properties {
     public double defence = 0.0;
     public double strike = 0.0; // 暴击率
     public double speed = 0.0;
+    public double dodge = 0.0; // 闪避率
     public double luck = 0.0;
 
     /**
@@ -39,11 +40,12 @@ public class Properties {
     }
 
     /**
-     * 1敏捷 = 3速度 + 1爆率
+     * 1敏捷 = 3速度 + 1爆率 + 1闪避
      */
     private void applyAgility(double agility) {
         this.speed += agility * 3;
         this.strike += agility * 1;
+        this.dodge += dodge * 1;
     }
 
     /**
@@ -100,6 +102,7 @@ public class Properties {
             this.defence += properties.defence;
             this.strike += properties.strike;
             this.speed += properties.speed;
+            this.dodge += properties.dodge;
             this.luck += properties.luck;
         }
     }
@@ -110,34 +113,37 @@ public class Properties {
     public String calChangeValueLog() {
         StringBuilder sb = new StringBuilder();
         if (physique != 0) {
-            sb.append("physique: ").append(physique).append(";");
+            sb.append("physique: ").append(physique > 0 ? "+" : "-").append(physique).append(";");
         }
         if (strength != 0) {
-            sb.append("strength: ").append(strength).append(";");
+            sb.append("strength: ").append(strength > 0 ? "+" : "-").append(strength).append(";");
         }
         if (agility != 0) {
-            sb.append("agility: ").append(agility).append(";");
+            sb.append("agility: ").append(agility > 0 ? "+" : "-").append(agility).append(";");
         }
         if (maxHp != 0) {
-            sb.append("maxHp: ").append(maxHp).append(";");
+            sb.append("maxHp: ").append(maxHp > 0 ? "+" : "-").append(maxHp).append(";");
         }
         if (hp != 0) {
-            sb.append("hp: ").append(hp).append(";");
+            sb.append("hp: ").append(hp > 0 ? "+" : "-").append(hp).append(";");
         }
         if (attack != 0) {
-            sb.append("attack: ").append(attack).append(";");
+            sb.append("attack: ").append(attack > 0 ? "+" : "-").append(attack).append(";");
         }
         if (defence != 0) {
-            sb.append("defence: ").append(defence).append(";");
+            sb.append("defence: ").append(defence > 0 ? "+" : "-").append(defence).append(";");
         }
         if (strike != 0) {
-            sb.append("strike: ").append(strike).append(";");
+            sb.append("strike: ").append(strike > 0 ? "+" : "-").append(strike).append(";");
         }
         if (speed != 0) {
-            sb.append("speed: ").append(speed).append(";");
+            sb.append("speed: ").append(speed > 0 ? "+" : "-").append(speed).append(";");
+        }
+        if (dodge != 0) {
+            sb.append("dodge: ").append(dodge > 0 ? "+" : "-").append(dodge).append(";");
         }
         if (luck != 0) {
-            sb.append("luck: ").append(luck).append(";");
+            sb.append("luck: ").append(luck > 0 ? "+" : "-").append(luck).append(";");
         }
         if (sb.length() > 0) {
             return sb.toString();
@@ -155,6 +161,7 @@ public class Properties {
         defence = 0.0;
         strike = 0.0;
         speed = 0.0;
+        dodge = 0.0;
         luck = 0.0;
     }
 
@@ -201,6 +208,10 @@ public class Properties {
         }
         public PropertiesBuilder setSpeed(double speed) {
             template.speed = speed;
+            return this;
+        }
+        public PropertiesBuilder setDodge(double dodge) {
+            template.dodge = dodge;
             return this;
         }
         public PropertiesBuilder setLuck(double luck) {
