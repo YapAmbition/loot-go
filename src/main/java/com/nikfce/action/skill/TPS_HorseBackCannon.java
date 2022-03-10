@@ -38,8 +38,9 @@ public class TPS_HorseBackCannon implements TriggerPassiveSkill {
         double damage = me.currentStrength() * 2.0;
         System.out.printf("%s的被动技能[%s]生效,将对攻击他的敌人:%s进行伤害为:%s的反击%n", me.name, name(), looterList.stream().map(a -> a.name).collect(Collectors.joining(",")), damage);
         for (Looter looter : looterList) {
-            Properties properties = Properties.PropertiesBuilder.create().setHp(-damage).build();
-            Effect effect = new Effect(properties);
+            boolean strike = me.calCauseStrike();
+            Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * damage : damage)).build();
+            Effect effect = new Effect(properties, strike);
             looter.beAttack(me, effect);
         }
     }

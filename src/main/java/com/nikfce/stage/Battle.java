@@ -25,8 +25,9 @@ public class Battle {
         actionPlan = new BottleActionPlan(CollectionUtil.mergeLists(players, enemies));
     }
 
-    public void battleStart() {
+    public boolean battleStart() {
         System.out.println("战斗开始!");
+        callBattleStart();
         BattleFinishEnum battleFinishEnumState = battleFinishState();
         while (!battleFinishEnumState.battleFinish) {
             roundCount ++;
@@ -50,8 +51,27 @@ public class Battle {
 
             battleFinishEnumState = battleFinishState();
         }
+        callBattleEnd();
         System.out.println("第" + roundCount + "回合,战斗结束");
-        handleBattleFinish(battleFinishEnumState);
+        return handleBattleFinish(battleFinishEnumState);
+    }
+
+    private void callBattleEnd() {
+        for (Looter looter : players) {
+            looter.battleEnd();
+        }
+        for (Looter looter : enemies) {
+            looter.battleEnd();
+        }
+    }
+
+    private void callBattleStart() {
+        for (Looter looter : players) {
+            looter.battleStart();
+        }
+        for (Looter looter : enemies) {
+            looter.battleStart();
+        }
     }
 
     private void checkLooterStatus() {
@@ -70,17 +90,19 @@ public class Battle {
         return players.contains(looter);
     }
 
-    private void handleBattleFinish(BattleFinishEnum battleFinishEnum) {
+    private boolean handleBattleFinish(BattleFinishEnum battleFinishEnum) {
         switch (battleFinishEnum) {
             case ALL_DEAD:
                 System.out.println("双方同归于尽了");
-                break;
+                return true;
             case PLAYER_ALL_DEAD:
                 System.out.println("player死完了");
-                break;
+                return false;
             case ENEMIES_ALL_DEAD:
                 System.out.println("enemies死完了");
-                break;
+                return true;
+            default:
+                throw new RuntimeException("未知的结束状态:" + battleFinishEnum);
         }
     }
 

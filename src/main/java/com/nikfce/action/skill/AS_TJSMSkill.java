@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 田忌赛马,李坤专属技能,技能会选取攻击力最高的敌人为目标,造成1.5倍伤害
+ * 田忌赛马,李坤专属技能,技能会选取[1]个攻击力最高的敌人为目标,造成1.5倍伤害
  * @author shenzhencheng 2022/3/10
  */
 public class AS_TJSMSkill implements ActiveSKill {
@@ -32,13 +32,14 @@ public class AS_TJSMSkill implements ActiveSKill {
 
     @Override
     public Effect handle(SkillContext skillContext) {
-        // 造成1.5倍伤害
         Looter me = skillContext.user;
-        double attack = me.currentAttack() * 1.5;
+        double damage = me.currentAttack() * 1.5;
+        boolean strike = me.calCauseStrike();
+        System.out.printf("%s使出一招%s,选取敌方的上等马进行攻击%n", me.name, name());
         Properties properties = Properties.PropertiesBuilder.create()
-                .setHp(-attack)
+                .setHp(-(strike ? 2.0 * damage : damage))
                 .build();
-        return new Effect(properties);
+        return new Effect(properties, strike);
     }
 
     @Override

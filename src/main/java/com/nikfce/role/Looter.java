@@ -78,6 +78,10 @@ public class Looter implements Combative {
         return basicProperties.dodge + effectProperties.dodge + tmpProperties.dodge;
     }
 
+    public double currentStrike() {
+        return basicProperties.strike + effectProperties.strike + tmpProperties.strike;
+    }
+
     public double currentLuck() {
         return basicProperties.luck + effectProperties.luck + tmpProperties.luck;
     }
@@ -86,8 +90,25 @@ public class Looter implements Combative {
         return basicProperties.attack + effectProperties.attack + tmpProperties.attack;
     }
 
+    /**
+     * 基础防御力
+     */
     public double basicDefence() {
         return basicProperties.defence;
+    }
+
+    /**
+     * 计算是否产生暴击
+     */
+    public boolean calCauseStrike() {
+        double strike = currentStrike();
+        return random.nextInt(100) < strike;
+    }
+
+    @Override
+    public void battleStart() {
+        effectProperties.clear();
+        tmpProperties.clear();
     }
 
     @Override
@@ -151,6 +172,9 @@ public class Looter implements Combative {
             SkillContext actualSkillContext = new SkillContext(RoundLifecycle.AFTER_BE_ATTACK, this, Collections.singletonList(attacker), actualEffect);
             passiveSkillAffect(actualSkillContext);
 
+            if (actualEffect.strike) {
+                System.out.printf("%s的这次攻击竟然产生了暴击!%n", attacker.name);
+            }
             System.out.println(name + "最终受到" + actualEffect.properties.hp + "点伤害");
 
             // 回调攻击者的攻击结束接口,并告诉它实际造成的伤害是多少
@@ -199,6 +223,12 @@ public class Looter implements Combative {
         tmpProperties.clear();
     }
 
+    @Override
+    public void battleEnd() {
+        effectProperties.clear();
+        tmpProperties.clear();
+    }
+
     /**
      * 选择一个主动技能
      */
@@ -243,7 +273,7 @@ public class Looter implements Combative {
         Properties actualProperties = new Properties(false);
         actualProperties.mergeProperties(effectProperties);
         actualProperties.hp = damage;
-        return new Effect(actualProperties);
+        return new Effect(actualProperties, comeInEffect.strike);
     }
 
 }

@@ -28,11 +28,15 @@ public class AS_NormalAttack implements ActiveSKill {
     public Effect handle(SkillContext skillContext) {
         Looter me = skillContext.user;
         double damage = me.currentAttack();
+        boolean strike = me.calCauseStrike();
         System.out.printf("%s对使出一招普通攻击,这一招一看就有足足%s的威力", me.name, damage);
+        if (strike) {
+            damage = damage * 2.0;
+        }
         Properties properties = Properties.PropertiesBuilder.create()
                 .setHp(-damage)
                 .build();
-        return new Effect(properties);
+        return new Effect(properties, strike);
     }
 
     @Override

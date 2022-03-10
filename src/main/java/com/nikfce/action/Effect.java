@@ -9,9 +9,16 @@ import com.nikfce.role.Properties;
 public class Effect {
 
     public final Properties properties;
+    // 本次影响是否产生了暴击
+    public boolean strike = false;
 
     public Effect(Properties properties) {
         this.properties = properties;
+    }
+
+    public Effect(Properties properties, boolean strike) {
+        this.properties = properties;
+        this.strike = strike;
     }
 
 }

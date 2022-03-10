@@ -9,6 +9,11 @@ import com.nikfce.stage.RoundContext;
 public interface Combative {
 
     /**
+     * 战斗开始
+     */
+    void battleStart();
+
+    /**
      * 回合开始
      */
     void roundStart(RoundContext roundContext);
@@ -41,5 +46,10 @@ public interface Combative {
      * 回合结束
      */
     void roundEnd(RoundContext roundContext);
+
+    /**
+     * 战斗结束
+     */
+    void battleEnd();
 
 }

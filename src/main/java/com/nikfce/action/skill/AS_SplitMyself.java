@@ -36,13 +36,15 @@ public class AS_SplitMyself implements ActiveSKill {
         System.out.printf("%s使出一招%s,制造出两个自己的分身先对%s进行攻击,然后本体再对其进行攻击!%n", me.name, name(), target.name);
         for (int i = 0 ; i < 2 ; i ++) {
             System.out.printf("%s正在进行第%s段伤害为%s的攻击%n", me.name, (i+1), extraDamage);
-            Properties properties = Properties.PropertiesBuilder.create().setHp(-extraDamage).build();
-            Effect extraEffect = new Effect(properties);
+            boolean strike = me.calCauseStrike();
+            Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * extraDamage : extraDamage)).build();
+            Effect extraEffect = new Effect(properties, strike);
             target.beAttack(me, extraEffect);
         }
         System.out.printf("%s本体对%s进行伤害为%s的总攻击!%n", me.name, target.name, damage);
-        Properties properties = Properties.PropertiesBuilder.create().setHp(-damage).build();
-        return new Effect(properties);
+        boolean strike = me.calCauseStrike();
+        Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * damage : damage)).build();
+        return new Effect(properties, strike);
     }
 
     @Override
