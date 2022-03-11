@@ -1,6 +1,7 @@
 package com.nikfce.stage;
 
 import com.nikfce.role.Looter;
+import com.nikfce.thread.ThreadLocalMap;
 import com.nikfce.util.CollectionUtil;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Battle {
     }
 
     public boolean battleStart() {
-        System.out.println("战斗开始!");
+        ThreadLocalMap.getRecorder().record("战斗开始!");
         // 调用运动员的战斗开始钩子
         callBattleStart();
 
@@ -38,11 +39,11 @@ public class Battle {
             if (roundCount > 999) {
                 throw new RuntimeException("回合数超限,一定是出了什么问题");
             }
-            System.out.println("------------------------------");
-            System.out.println("开始第" + roundCount + "回合");
+            ThreadLocalMap.getRecorder().record("------------------------------");
+            ThreadLocalMap.getRecorder().record("开始第" + roundCount + "回合");
             // 找到下次行动的角色
             Looter currentLooter = actionPlan.next();
-            System.out.println("当前攻击的角色为:" + currentLooter.name);
+            ThreadLocalMap.getRecorder().record("当前攻击的角色为:" + currentLooter.name);
             // 角色
             RoundContext roundContext;
             if (isPlayer(currentLooter)) {
@@ -56,7 +57,7 @@ public class Battle {
             battleFinishEnumState = battleFinishState();
         }
         callBattleEnd();
-        System.out.println("第" + roundCount + "回合,战斗结束");
+        ThreadLocalMap.getRecorder().record("第" + roundCount + "回合,战斗结束");
         return handleBattleFinish(battleFinishEnumState);
     }
 
@@ -65,10 +66,10 @@ public class Battle {
      */
     private void introduceLooter() {
         for (Looter looter : players) {
-            System.out.printf("[%s]: %s%n", looter.name, looter.currentPropertiesSummary());
+            ThreadLocalMap.getRecorder().record_f("[%s]: %s", looter.name, looter.currentPropertiesSummary());
         }
         for (Looter looter : enemies) {
-            System.out.printf("[%s]: %s%n", looter.name, looter.currentPropertiesSummary());
+            ThreadLocalMap.getRecorder().record_f("[%s]: %s", looter.name, looter.currentPropertiesSummary());
         }
     }
 
@@ -101,10 +102,10 @@ public class Battle {
      */
     private void checkLooterStatus() {
         for (Looter looter : players) {
-            System.out.printf("[%s] : (%s/%s)%n", looter.name, looter.currentHp(), looter.currentMaxHp());
+            ThreadLocalMap.getRecorder().record_f("[%s] : (%s/%s)", looter.name, looter.currentHp(), looter.currentMaxHp());
         }
         for (Looter looter : enemies) {
-            System.out.printf("[%s] : (%s/%s)%n", looter.name, looter.currentHp(), looter.currentMaxHp());
+            ThreadLocalMap.getRecorder().record_f("[%s] : (%s/%s)", looter.name, looter.currentHp(), looter.currentMaxHp());
         }
     }
 
@@ -118,13 +119,13 @@ public class Battle {
     private boolean handleBattleFinish(BattleFinishEnum battleFinishEnum) {
         switch (battleFinishEnum) {
             case ALL_DEAD:
-                System.out.println("双方同归于尽了");
+                ThreadLocalMap.getRecorder().record_f("双方同归于尽了");
                 return true;
             case PLAYER_ALL_DEAD:
-                System.out.println("player死完了");
+                ThreadLocalMap.getRecorder().record_f("player死完了");
                 return false;
             case ENEMIES_ALL_DEAD:
-                System.out.println("enemies死完了");
+                ThreadLocalMap.getRecorder().record_f("enemies死完了");
                 return true;
             default:
                 throw new RuntimeException("未知的结束状态:" + battleFinishEnum);
@@ -153,8 +154,8 @@ public class Battle {
     }
 
     private boolean allDead(List<Looter> looterList) {
-        for (int i = 0 ; i < looterList.size() ; i ++) {
-            if (!looterList.get(i).isDead()) {
+        for (Looter looter : looterList) {
+            if (!looter.isDead()) {
                 return false;
             }
         }

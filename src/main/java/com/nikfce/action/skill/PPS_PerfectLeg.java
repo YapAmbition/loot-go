@@ -4,6 +4,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.PropertiesPassiveSkill;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
+import com.nikfce.thread.ThreadLocalMap;
 
 /**
  * 完美大腿
@@ -16,7 +17,7 @@ public class PPS_PerfectLeg implements PropertiesPassiveSkill {
     public void battleStart(Looter myself) {
         double agility = myself.basicAgility();
         double increment = agility * 0.20;
-        System.out.printf("%s发动[%s],增加自己%s的敏捷%n", myself.name, name(), increment);
+        ThreadLocalMap.getRecorder().record_f("%s发动[%s],增加自己%s的敏捷", myself.name, name(), increment);
         Properties properties = Properties.PropertiesBuilder.create().setAgility(increment).setApplyAttribute(true).build();
         myself.intensified(myself, new Effect(properties));
     }

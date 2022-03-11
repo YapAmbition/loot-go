@@ -5,6 +5,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,7 @@ public class AS_ReduceDimension implements ActiveSKill {
         double damage = me.currentAttack() * 1.2;
         double downDefence = target.basicDefence() * 0.3;
         boolean strike = me.calCauseStrike();
-        System.out.printf("%s对%s使出一招降维打击,减少其%s的防御并造成%s的伤害%n", me.name, target.name, downDefence, damage);
+        ThreadLocalMap.getRecorder().record_f("%s对%s使出一招降维打击,减少其%s的防御并造成%s的伤害", me.name, target.name, downDefence, damage);
         if (strike) {
             damage = damage * 2.0;
         }

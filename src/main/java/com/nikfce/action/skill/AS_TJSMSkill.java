@@ -5,6 +5,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,7 @@ public class AS_TJSMSkill implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack() * 1.5;
         boolean strike = me.calCauseStrike();
-        System.out.printf("%s使出一招%s,选取敌方的上等马进行攻击%n", me.name, name());
+        ThreadLocalMap.getRecorder().record_f("%s使出一招%s,选取敌方的上等马进行攻击", me.name, name());
         Properties properties = Properties.PropertiesBuilder.create()
                 .setHp(-(strike ? 2.0 * damage : damage))
                 .build();

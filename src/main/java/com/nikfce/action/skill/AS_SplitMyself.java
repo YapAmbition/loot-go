@@ -5,6 +5,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,15 +34,15 @@ public class AS_SplitMyself implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack();
         double extraDamage = damage * 0.5;
-        System.out.printf("%s使出一招%s,制造出两个自己的分身先对%s进行攻击,然后本体再对其进行攻击!%n", me.name, name(), target.name);
+        ThreadLocalMap.getRecorder().record_f("%s使出一招%s,制造出两个自己的分身先对%s进行攻击,然后本体再对其进行攻击!", me.name, name(), target.name);
         for (int i = 0 ; i < 2 ; i ++) {
-            System.out.printf("%s正在进行第%s段伤害为%s的攻击%n", me.name, (i+1), extraDamage);
+            ThreadLocalMap.getRecorder().record_f("%s正在进行第%s段伤害为%s的攻击", me.name, (i+1), extraDamage);
             boolean strike = me.calCauseStrike();
             Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * extraDamage : extraDamage)).build();
             Effect extraEffect = new Effect(properties, strike);
             target.beAttack(me, extraEffect);
         }
-        System.out.printf("%s本体对%s进行伤害为%s的总攻击!%n", me.name, target.name, damage);
+        ThreadLocalMap.getRecorder().record_f("%s本体对%s进行伤害为%s的总攻击!", me.name, target.name, damage);
         boolean strike = me.calCauseStrike();
         Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * damage : damage)).build();
         return new Effect(properties, strike);

@@ -3,6 +3,7 @@ package com.nikfce.stage.competion;
 import com.nikfce.role.Looter;
 import com.nikfce.role.hero.*;
 import com.nikfce.stage.Battle;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,9 +33,9 @@ public class PointRace {
                 if (looter == target) {
                     continue;
                 }
-                System.out.println("=====================");
-                System.out.println("下面由" + looter.name + "对战" + target.name);
-                System.out.println("=====================");
+                ThreadLocalMap.getRecorder().record_f("=====================");
+                ThreadLocalMap.getRecorder().record_f("下面由" + looter.name + "对战" + target.name);
+                ThreadLocalMap.getRecorder().record_f("=====================");
                 Battle battle = new Battle(Collections.singletonList(looter), Collections.singletonList(target));
                 boolean win = battle.battleStart();
                 if (win) {
@@ -45,10 +46,10 @@ public class PointRace {
             }
         }
 
-        System.out.println("=====================");
-        System.out.println("所有对战结束,展示对战结果");
+        ThreadLocalMap.getRecorder().record_f("=====================");
+        ThreadLocalMap.getRecorder().record_f("所有对战结束,展示对战结果");
         for (Looter looter : scoreMap.keySet()) {
-            System.out.println(looter.name + ": " + scoreMap.get(looter));
+            ThreadLocalMap.getRecorder().record_f(looter.name + ": " + scoreMap.get(looter));
         }
     }
 

@@ -4,6 +4,7 @@ import com.nikfce.action.*;
 import com.nikfce.action.skill.AS_NormalAttack;
 import com.nikfce.stage.RoundContext;
 import com.nikfce.stage.RoundLifecycle;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -173,7 +174,7 @@ public class Looter implements Combative {
         SkillContext preSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
         List<Looter> targets = activeSKill.selectTargets(preSkillContext);
 
-        System.out.println(name + "决定对" + targets.stream().map(i -> i.name).collect(Collectors.joining(",")) + "使用" + activeSKill.name());
+        ThreadLocalMap.getRecorder().record_f(name + "决定对" + targets.stream().map(i -> i.name).collect(Collectors.joining(",")) + "使用" + activeSKill.name());
 
         SkillContext actualSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, targets, null);
         if (activeSKill instanceof IntensifyActiveSkill) {
@@ -194,7 +195,7 @@ public class Looter implements Combative {
 
     @Override
     public void beAttack(Looter attacker, Effect effect) {
-        System.out.println(name + "受到了来自" + attacker.name + "的攻击");
+        ThreadLocalMap.getRecorder().record_f(name + "受到了来自" + attacker.name + "的攻击");
 
         SkillContext skillContext = new SkillContext(RoundLifecycle.BEFORE_BE_ATTACK, this, Collections.singletonList(attacker), effect);
         passiveSkillAffect(skillContext);
@@ -202,7 +203,7 @@ public class Looter implements Combative {
         // 计算角色的闪避值,并进行闪避判定
         double dodge = currentDodge();
         if (random.nextInt(100) < dodge) {
-            System.out.printf("%s闪过了%s攻击,自己竟毫发未损!%n", name, attacker.name);
+            ThreadLocalMap.getRecorder().record_f("%s闪过了%s攻击,自己竟毫发未损!", name, attacker.name);
         } else {
             // 计算并应用伤害,返回实际造成的伤害
             Effect actualEffect = calAndApplyEffect(skillContext);
@@ -211,9 +212,9 @@ public class Looter implements Combative {
             passiveSkillAffect(actualSkillContext);
 
             if (actualEffect.strike) {
-                System.out.printf("%s的这次攻击竟然产生了暴击!%n", attacker.name);
+                ThreadLocalMap.getRecorder().record_f("%s的这次攻击竟然产生了暴击!", attacker.name);
             }
-            System.out.println(name + "最终受到" + actualEffect.properties.hp + "点伤害");
+            ThreadLocalMap.getRecorder().record_f(name + "最终受到" + actualEffect.properties.hp + "点伤害");
 
             // 回调攻击者的攻击结束接口,并告诉它实际造成的伤害是多少
             attacker.attackFinish(this, actualEffect);
@@ -233,8 +234,8 @@ public class Looter implements Combative {
      */
     @Override
     public void intensified(Looter from, Effect effect) {
-        System.out.printf("来自%s的强化技能生效!%n", from.name);
-        System.out.println(effect.properties.calChangeValueLog());
+        ThreadLocalMap.getRecorder().record_f("来自%s的强化技能生效!", from.name);
+        ThreadLocalMap.getRecorder().record_f(effect.properties.calChangeValueLog());
         effectProperties.mergeProperties(effect.properties);
         if (currentHp() > currentMaxHp()) {
             basicProperties.hp = basicProperties.maxHp;

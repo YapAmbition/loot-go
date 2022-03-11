@@ -5,6 +5,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class AS_NormalAttack implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack();
         boolean strike = me.calCauseStrike();
-        System.out.printf("%s对使出一招普通攻击,这一招一看就有足足%s的威力", me.name, damage);
+        ThreadLocalMap.getRecorder().record_f("%s对使出一招普通攻击,这一招一看就有足足%s的威力", me.name, damage);
         if (strike) {
             damage = damage * 2.0;
         }

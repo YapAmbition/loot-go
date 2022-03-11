@@ -5,6 +5,7 @@ import com.nikfce.action.IntensifyActiveSkill;
 import com.nikfce.action.SkillContext;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
+import com.nikfce.thread.ThreadLocalMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class IAS_Peach implements IntensifyActiveSkill {
         canUseCount --;
         Looter me = skillContext.user;
         double recover = me.currentMaxHp() / 2.0;
-        System.out.printf("%s不慌不忙地使用了%s,为自己恢复了%s的血量%n", me.name, name(), recover);
+        ThreadLocalMap.getRecorder().record_f("%s不慌不忙地使用了%s,为自己恢复了%s的血量", me.name, name(), recover);
         Properties properties = Properties.PropertiesBuilder.create().setHp(recover).build();
         return new Effect(properties);
     }
