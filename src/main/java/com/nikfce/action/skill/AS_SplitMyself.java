@@ -58,7 +58,7 @@ public class AS_SplitMyself implements ActiveSKill {
     }
 
     @Override
-    public void roundEnd() {
+    public void roundEnd(Looter myself) {
         target = null;
     }
 }

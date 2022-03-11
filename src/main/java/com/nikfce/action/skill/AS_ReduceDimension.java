@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * 降维打击,杨胖的专属技能,对[1]个敌人降低其20%基础防御并造成攻击力的1.2倍伤害
+ * 降维打击,杨胖的专属技能,对[1]个敌人降低其30%基础防御并造成攻击力的1.2倍伤害
  * @author shenzhencheng 2022/3/10
  */
 public class AS_ReduceDimension implements ActiveSKill {
@@ -52,7 +52,7 @@ public class AS_ReduceDimension implements ActiveSKill {
     }
 
     @Override
-    public void roundEnd() {
+    public void roundEnd(Looter myself) {
         target = null;
     }
 }

@@ -5,6 +5,8 @@ import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
 /**
+ * 压强
+ * 小脆皮代言人,有全英雄中最高的闪避值,极大的增加了他的生存力
  * @author shenzhencheng 2022/3/10
  */
 public class YaQiang extends Looter {

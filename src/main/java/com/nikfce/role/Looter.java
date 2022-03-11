@@ -98,6 +98,38 @@ public class Looter implements Combative {
     }
 
     /**
+     * 基础力量
+     */
+    public double basicStrength() {
+        return basicProperties.strength;
+    }
+
+    /**
+     * 基础体质
+     */
+    public double basicPhysique() {
+        return basicProperties.physique;
+    }
+
+    /**
+     * 基础敏捷
+     */
+    public double basicAgility() {
+        return basicProperties.agility;
+    }
+
+    /**
+     * 基础属性简介
+     */
+    public String currentPropertiesSummary() {
+        Properties summary = new Properties(false);
+        summary.mergeProperties(basicProperties);
+        summary.mergeProperties(effectProperties);
+        summary.mergeProperties(tmpProperties);
+        return summary.calChangeValueLog();
+    }
+
+    /**
      * 计算是否产生暴击
      */
     public boolean calCauseStrike() {
@@ -110,7 +142,7 @@ public class Looter implements Combative {
         effectProperties.clear();
         tmpProperties.clear();
         for (Skill skill : skillList) {
-            skill.battleStart();
+            skill.battleStart(this);
         }
     }
 
@@ -118,7 +150,7 @@ public class Looter implements Combative {
     public void roundStart(RoundContext roundContext) {
         tmpProperties.clear();
         for (Skill skill : skillList) {
-            skill.roundStart();
+            skill.roundStart(this);
         }
     }
 
@@ -228,7 +260,7 @@ public class Looter implements Combative {
     public void roundEnd(RoundContext roundContext) {
         tmpProperties.clear();
         for (Skill skill : skillList) {
-            skill.roundEnd();
+            skill.roundEnd(this);
         }
     }
 
@@ -237,7 +269,7 @@ public class Looter implements Combative {
         effectProperties.clear();
         tmpProperties.clear();
         for (Skill skill : skillList) {
-            skill.battleEnd();
+            skill.battleEnd(this);
         }
     }
 

@@ -46,7 +46,7 @@ public class IAS_Peach implements IntensifyActiveSkill {
     }
 
     @Override
-    public void battleStart() {
+    public void battleStart(Looter myself) {
         canUseCount = 3;
     }
 }

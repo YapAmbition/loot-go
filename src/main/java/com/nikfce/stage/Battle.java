@@ -27,7 +27,11 @@ public class Battle {
 
     public boolean battleStart() {
         System.out.println("战斗开始!");
+        // 调用运动员的战斗开始钩子
         callBattleStart();
+
+        // 介绍运动员的属性
+        introduceLooter();
         BattleFinishEnum battleFinishEnumState = battleFinishState();
         while (!battleFinishEnumState.battleFinish) {
             roundCount ++;
@@ -56,6 +60,21 @@ public class Battle {
         return handleBattleFinish(battleFinishEnumState);
     }
 
+    /**
+     * 介绍looter的属性
+     */
+    private void introduceLooter() {
+        for (Looter looter : players) {
+            System.out.printf("[%s]: %s%n", looter.name, looter.currentPropertiesSummary());
+        }
+        for (Looter looter : enemies) {
+            System.out.printf("[%s]: %s%n", looter.name, looter.currentPropertiesSummary());
+        }
+    }
+
+    /**
+     * 调用looter的战斗结束钩子
+     */
     private void callBattleEnd() {
         for (Looter looter : players) {
             looter.battleEnd();
@@ -65,6 +84,9 @@ public class Battle {
         }
     }
 
+    /**
+     * 调用looter的战斗开始钩子
+     */
     private void callBattleStart() {
         for (Looter looter : players) {
             looter.battleStart();
@@ -74,6 +96,9 @@ public class Battle {
         }
     }
 
+    /**
+     * 检查looter的血量状态
+     */
     private void checkLooterStatus() {
         for (Looter looter : players) {
             System.out.printf("[%s] : (%s/%s)%n", looter.name, looter.currentHp(), looter.currentMaxHp());

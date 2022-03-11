@@ -5,6 +5,8 @@ import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
 /**
+ * 杨胖
+ * 中等偏上的攻击和仅次于谢力的体质,他就是一个标准的二次元
  * @author shenzhencheng 2022/3/10
  */
 public class YangPang extends Looter {
