@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.IntensifyActiveSkill;
 import com.nikfce.action.SkillContext;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -16,6 +17,7 @@ import java.util.List;
  * 一场战斗中只能使用3次,可以回复自身50%的血量
  * @author shenzhencheng 2022/3/10
  */
+@SkillCode("SK_5")
 public class IAS_Peach implements IntensifyActiveSkill {
 
     private int canUseCount = 3;

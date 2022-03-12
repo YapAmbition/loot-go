@@ -16,7 +16,7 @@ public class ConsoleRecorder implements Recorder {
 
     @Override
     public void record(String msg) {
-        System.out.println("nico: " + msg);
+        System.out.println(msg);
     }
 
     @Override

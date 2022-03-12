@@ -2,6 +2,7 @@ package com.nikfce.role;
 
 import com.nikfce.action.*;
 import com.nikfce.action.skill.AS_NormalAttack;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.stage.RoundContext;
 import com.nikfce.stage.RoundLifecycle;
 import com.nikfce.thread.ThreadLocalMap;
@@ -13,9 +14,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
+ * 角色的基类
  * @author shenzhencheng 2022/3/1
  */
-public class Looter implements Combative {
+public abstract class Looter implements Combative {
 
     private final Random random = new Random();
 
@@ -27,31 +29,49 @@ public class Looter implements Combative {
     // 临时属性
     protected final Properties tmpProperties = new Properties(false);
 
-    protected final List<Skill> skillList = new ArrayList<>();
+    private final List<Skill> skillList = new ArrayList<>();
 
     public Looter(String name) {
         this(name, null);
     }
 
     public Looter(String name, Properties properties) {
+        this(name, properties, null);
+    }
+
+    public Looter(String name, Properties properties, List<Skill> skillList) {
         this.name = name;
         this.basicProperties.mergeProperties(properties);
         Properties allLooterBasicProperties = Properties.PropertiesBuilder.create().setMaxHp(200).setHp(200).build();
         this.basicProperties.mergeProperties(allLooterBasicProperties);
         initSkill();
+        if (skillList != null) {
+            for (Skill skill : skillList) {
+                addSkill(skill);
+            }
+        }
     }
 
     /**
      * 添加默认技能
      */
     protected void initSkill() {
-        skillList.add(new AS_NormalAttack());
+        addSkill(new AS_NormalAttack());
     }
 
     /**
-     * 添加一个技能
+     * 添加一个技能,添加时通过技能码做去重
      */
     public void addSkill(Skill skill) {
+        SkillCode curSkillCode = skill.getClass().getAnnotation(SkillCode.class);
+        String curCode = curSkillCode.value();
+        for (Skill sk : skillList) {
+            SkillCode skillCode = sk.getClass().getAnnotation(SkillCode.class);
+            String code = skillCode.value();
+            if (code.equalsIgnoreCase(curCode)) {
+                return ;
+            }
+        }
         skillList.add(skill);
     }
 

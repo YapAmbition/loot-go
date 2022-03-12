@@ -2,6 +2,7 @@ package com.nikfce.action.skill;
 
 import com.nikfce.action.Effect;
 import com.nikfce.action.PropertiesPassiveSkill;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -11,6 +12,7 @@ import com.nikfce.thread.ThreadLocalMap;
  * 增加20%的基础力量值
  * @author shenzhencheng 2022/3/11
  */
+@SkillCode("SK_8")
 public class PPS_PerfectMuscle implements PropertiesPassiveSkill {
 
     @Override

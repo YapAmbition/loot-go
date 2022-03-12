@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -16,7 +17,9 @@ import java.util.stream.Collectors;
  * 普通攻击,对随机[1]个敌人造成攻击力100%的伤害
  * @author shenzhencheng 2022/3/10
  */
+@SkillCode("SK_1")
 public class AS_NormalAttack implements ActiveSKill {
+
     @Override
     public List<Looter> selectTargets(SkillContext skillContext) {
         List<Looter> enemies = skillContext.enemy;

@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -15,7 +16,9 @@ import java.util.stream.Collectors;
  * 田忌赛马,李坤专属技能,技能会选取[1]个攻击力最高的敌人为目标,造成1.5倍伤害
  * @author shenzhencheng 2022/3/10
  */
+@SkillCode("SK_4")
 public class AS_TJSMSkill implements ActiveSKill {
+
     @Override
     public List<Looter> selectTargets(SkillContext skillContext) {
         List<Looter> enemies = skillContext.enemy;

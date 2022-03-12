@@ -1,9 +1,11 @@
 package com.nikfce.stage;
 
+import com.alibaba.fastjson.JSON;
 import com.nikfce.role.Looter;
 import com.nikfce.thread.ThreadLocalMap;
 import com.nikfce.util.CollectionUtil;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author shenzhencheng 2022/3/1
@@ -27,6 +29,7 @@ public class Battle {
     }
 
     public boolean battleStart() {
+        ThreadLocalMap.getRecorder().record("==============================");
         ThreadLocalMap.getRecorder().record("战斗开始!");
         // 调用运动员的战斗开始钩子
         callBattleStart();
@@ -57,8 +60,10 @@ public class Battle {
             battleFinishEnumState = battleFinishState();
         }
         callBattleEnd();
-        ThreadLocalMap.getRecorder().record("第" + roundCount + "回合,战斗结束");
-        return handleBattleFinish(battleFinishEnumState);
+        ThreadLocalMap.getRecorder().record_f(">>>战斗结束,共%s回合<<<", roundCount);
+        boolean result = handleBattleFinish(battleFinishEnumState);
+        ThreadLocalMap.getRecorder().record("==============================");
+        return result;
     }
 
     /**
@@ -118,14 +123,11 @@ public class Battle {
 
     private boolean handleBattleFinish(BattleFinishEnum battleFinishEnum) {
         switch (battleFinishEnum) {
-            case ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("双方同归于尽了");
-                return true;
             case PLAYER_ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("player死完了");
+                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(enemies.stream().map(a -> a.name).collect(Collectors.toList())));
                 return false;
             case ENEMIES_ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("enemies死完了");
+                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(players.stream().map(a -> a.name).collect(Collectors.toList())));
                 return true;
             default:
                 throw new RuntimeException("未知的结束状态:" + battleFinishEnum);

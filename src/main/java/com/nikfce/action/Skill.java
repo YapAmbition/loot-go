@@ -3,6 +3,8 @@ package com.nikfce.action;
 import com.nikfce.role.Looter;
 
 /**
+ * 技能接口
+ * !!! 技能接口规约:不要用带参数的构造函数
  * @author shenzhencheng 2022/3/1
  */
 public interface Skill {

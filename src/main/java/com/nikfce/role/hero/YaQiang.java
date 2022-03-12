@@ -1,6 +1,7 @@
 package com.nikfce.role.hero;
 
 import com.nikfce.action.skill.AS_SplitMyself;
+import com.nikfce.annotation.LooterCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
@@ -9,6 +10,7 @@ import com.nikfce.role.Properties;
  * 小脆皮代言人,有全英雄中最高的闪避值,极大的增加了他的生存力
  * @author shenzhencheng 2022/3/10
  */
+@LooterCode("LOOTER_5")
 public class YaQiang extends Looter {
 
     public YaQiang() {

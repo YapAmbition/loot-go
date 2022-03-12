@@ -1,6 +1,7 @@
 package com.nikfce.role.hero;
 
 import com.nikfce.action.skill.AS_ReduceDimension;
+import com.nikfce.annotation.LooterCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
@@ -9,6 +10,7 @@ import com.nikfce.role.Properties;
  * 中等偏上的攻击和仅次于谢力的体质,他就是一个标准的二次元
  * @author shenzhencheng 2022/3/10
  */
+@LooterCode("LOOTER_4")
 public class YangPang extends Looter {
 
     public YangPang() {

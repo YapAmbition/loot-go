@@ -151,6 +151,21 @@ public class Properties {
         return "未发生任何变化";
     }
 
+    public boolean isEmpty() {
+        return physique == 0 &&
+                strength == 0 &&
+                agility == 0 &&
+                maxHp == 0.0 &&
+                hp == 0.0 &&
+                attack == 0.0 &&
+                defence == 0.0 &&
+                strike == 0.0 &&
+                speed == 0.0 &&
+                dodge == 0.0 &&
+                luck == 0.0;
+
+    }
+
     public void clear() {
         physique = 0;
         strength = 0;

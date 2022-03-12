@@ -1,6 +1,7 @@
 package com.nikfce.role.hero;
 
 import com.nikfce.action.skill.IAS_Peach;
+import com.nikfce.annotation.LooterCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
@@ -8,6 +9,7 @@ import com.nikfce.role.Properties;
  * 陶子:专属技能: `桃`，是目前唯一一个可以回复生命值的技能，3次的使用次数，在打持久战中足以耗死对手
  * @author shenzhencheng 2022/3/10
  */
+@LooterCode("LOOTER_2")
 public class TaoZi extends Looter {
 
     public TaoZi() {

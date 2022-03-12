@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.action.TriggerPassiveSkill;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.stage.RoundLifecycle;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * 会在自己受到伤害之后,给对手造成相当于自己力量值2倍的伤害
  * @author shenzhencheng 2022/3/10
  */
+@SkillCode("SK_9")
 public class TPS_HorseBackCannon implements TriggerPassiveSkill {
 
     private final Random random = new Random();

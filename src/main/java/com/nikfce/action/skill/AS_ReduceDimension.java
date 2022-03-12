@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * 降维打击,杨胖的专属技能,对[1]个敌人降低其30%基础防御并造成攻击力的1.2倍伤害
  * @author shenzhencheng 2022/3/10
  */
+@SkillCode("SK_2")
 public class AS_ReduceDimension implements ActiveSKill {
 
     private Looter target;

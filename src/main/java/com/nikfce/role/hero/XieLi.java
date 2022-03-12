@@ -1,6 +1,7 @@
 package com.nikfce.role.hero;
 
 import com.nikfce.action.skill.TPS_HorseBackCannon;
+import com.nikfce.annotation.LooterCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
@@ -9,6 +10,7 @@ import com.nikfce.role.Properties;
  * 想杀他的人大部分都自己先死了
  * @author shenzhencheng 2022/3/10
  */
+@LooterCode("LOOTER_3")
 public class XieLi extends Looter {
 
     public XieLi() {

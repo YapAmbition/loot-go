@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
+import com.nikfce.annotation.SkillCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * 对[1]个目标额外造成2次50%攻击的伤害
  * @author shenzhencheng 2022/3/10
  */
+@SkillCode("SK_3")
 public class AS_SplitMyself implements ActiveSKill {
 
     private Looter target;

@@ -3,6 +3,7 @@ package com.nikfce.role.hero;
 import com.nikfce.action.skill.PPS_PerfectBody;
 import com.nikfce.action.skill.PPS_PerfectLeg;
 import com.nikfce.action.skill.PPS_PerfectMuscle;
+import com.nikfce.annotation.LooterCode;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 
@@ -11,6 +12,7 @@ import com.nikfce.role.Properties;
  * 属性一般,没有主动技能,天生自带三个提高属性的被动,虽然初始属性一般但是叫他属性怪也不为过
  * @author shenzhencheng 2022/3/11
  */
+@LooterCode("LOOTER_6")
 public class YongGe extends Looter {
 
     public YongGe() {

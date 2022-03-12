@@ -1,0 +1,7 @@
+# 角色类唯一码    角色名     技能唯一码数组     角色属性数组(用英文逗号分割,属性分别对应applyAttribute,physique,strength,agility,maxHp,hp,attack,defence,strike,speed,dodge,luck)
+
+# 这里具体介绍一下applyAttribute属性,为1时表示初始化之后再运用一次attribute对战斗数值的加成.
+# 举个例子,如果想创建属性是多少无所谓,但是攻击力必须是100的角色,则applyAttribute应该为0表示不应用属性,否则这个角色的攻击力会变成100+${strength}*系数
+
+LOOTER_100  李雷          SK_1,SK_6           1,20,15,5,30,30,,,,,,,
+LOOTER_101  韩梅梅        SK_3,SK_4           1,23,13,8,,,
