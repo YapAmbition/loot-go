@@ -1,13 +1,11 @@
 package com.nikfce.role;
 
-import com.nikfce.register.LooterRegisterCenter;
+import com.nikfce.config.LootConfig;
 import com.nikfce.util.CollectionUtil;
 import com.nikfce.util.StringUtil;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 角色配置解析器
@@ -15,17 +13,47 @@ import java.util.List;
  */
 public class LooterConfigParser {
 
-    private static final String ROLE_CONFIG_FILE_PATH = "/Users/shenzhencheng/Documents/github/loot-go/src/main/resources/role.loot";
+    /**
+     * sample.definition作为示例不做解析
+     */
+    private static final String SAMPLE_NAME = "sample.definition";
+    /**
+     * 配置文件后缀
+     */
+    private static final String SUFFIX = ".definition";
 
-    public static List<LooterDefinition> parse() throws IOException {
-        List<String> roleStrList = readConfigFile();
-        if (CollectionUtil.isEmpty(roleStrList)) {
-            return new ArrayList<>();
-        }
+    /**
+     * 解析所有配置目录下,.definition结尾的配置文件,将它们定义的角色定义都加载到内存
+     */
+    public static List<LooterDefinition> parseAll() throws IOException {
         List<LooterDefinition> result = new ArrayList<>();
-        for (String roleStr : roleStrList) {
-            LooterDefinition looterDefinition = packageLooter(roleStr);
-            result.add(looterDefinition);
+        Set<String> looterCodeSet = new HashSet<>(); // 用来判断文件中定义的角色是否存在角色码不唯一的请看
+        String looterDir = LootConfig.getInstance().getLooterDir();
+        File file = new File(looterDir);
+        if (file.exists() && file.isDirectory()) {
+            String[] filenames = file.list();
+            if (filenames == null) {
+                return result;
+            }
+            for (String filename : filenames) {
+                if (!filename.endsWith(SUFFIX)) {
+                    continue;
+                }
+                if (SAMPLE_NAME.equalsIgnoreCase(filename)) {
+                    continue;
+                }
+                List<String> roleStrList = readConfigFile(String.format("%s/%s", looterDir, filename));
+                if (CollectionUtil.isNotEmpty(roleStrList)) {
+                    for (String roleStr : roleStrList) {
+                        LooterDefinition looterDefinition = packageLooter(roleStr);
+                        if (looterCodeSet.contains(looterDefinition.getCode())) {
+                            throw new RuntimeException("looter自定义文件中存在重复的唯一码:" + looterDefinition.getCode());
+                        }
+                        looterCodeSet.add(looterDefinition.getCode());
+                        result.add(looterDefinition);
+                    }
+                }
+            }
         }
         return result;
     }
@@ -88,8 +116,8 @@ public class LooterConfigParser {
         return looterDefinition;
     }
 
-    private static List<String> readConfigFile() throws IOException {
-        File file = new File(ROLE_CONFIG_FILE_PATH);
+    private static List<String> readConfigFile(String filename) throws IOException {
+        File file = new File(filename);
         if (!file.exists()) {
             return null;
         }

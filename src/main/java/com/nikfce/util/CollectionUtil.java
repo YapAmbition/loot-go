@@ -13,6 +13,10 @@ public class CollectionUtil {
         return collection == null || collection.isEmpty();
     }
 
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return !isEmpty(collection);
+    }
+
     /**
      * 合并所有列表,返回一个新列表
      */

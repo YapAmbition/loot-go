@@ -1,0 +1,49 @@
+# 关键字: $finish ; $unfinish ; $has_looter, $random
+# 命名规则: 不允许使用关键字,只能是英文字母和数字的组合
+# conditions中多个对象是'或'关系
+# conditions.condition列表中的条件是'且'关系
+
+name: 办公室 # 这里的name还当作场景的id来使用
+desc: 充满压抑感的破旧地穴,通过地上散乱的需求和文档足以想象出这里的统治者有多残酷
+flow:
+  - name: _0
+    conditions: null # 表示无需条件,默认为true
+    looters:
+      - LOOTER_115;[ 1,3 ]  # 意思是LOOTER_115生成最少1个最多3个
+      - LOOTER_116;[ 1,4)  # 意思是LOOTER_116生成最少一个,不能大于等于4个
+  - name: _1
+    conditions: null # 表示_1这组没有任何条件就能生成并展示
+    looters:
+      - LOOTER_111;[1,3]  # 意思是LOOTER_111生成最少1个最多3个
+      - LOOTER_112;[1,4)  # 意思是LOOTER_112生成最少一个,不能大于等于4个
+  - name: _2
+    conditions: null
+    looters:
+      - LOOTER_113;[1,2]  # 意思是LOOTER_113生成最少1个最多2个
+      - LOOTER_114;[1,1]  # 意思是LOOTER_114一定要生成1个
+  - name: _3
+    conditions: # 表示_3这个组出现的条件.以下每个节点为'或'关系
+      - name: condition_1 # 条件1,这里的命名可以随便写(不是关键字即可),它下面的节点为'且'关系
+        condition:
+          - $finish _1 # $finish和$unfinish是关键字,这里表示要完成条件_1
+          - $unfinish _2 # $finish和$unfinish是关键字,这里表示还没有完成条件_2
+      - name: condition_2 # 这里与条件1成'或'关系,整体上来看,_3这个flow要出现的条件为 (结束了_1且结束了_2) 或 (结束了_0)
+        condition:
+          - $finish _0
+    looters:
+      - LOOTER_117;[1,2]  # 意思是LOOTER_117生成最少1个最多2个
+  - name: _4
+    conditions:
+      - name: special_looter # 第一个条件,这个条件名可以自己随便取,不一定非叫condition_1的
+        condition:
+          - $has_looter LOOTER_1 # $has_looter关键字,如果进入的looter的唯一码包含LOOTER_1即为true.这个功能可以搞一些隐藏关卡
+    looters:
+      - LOOTER_118;[1,1]  # 意思是LOOTER_118生成1个
+  - name: _5
+    conditions:
+      - name: complete_random
+        condition:
+          - $random 0.4 # $random是关键字,后边的参数表示概率,这里表示40%的概率满足条件
+    looters:
+      - LOOTER_119;[3,4]  # 意思是LOOTER_119生成最少3个最多4个
+

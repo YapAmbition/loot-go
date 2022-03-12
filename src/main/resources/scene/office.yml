@@ -1,0 +1,25 @@
+name: 办公楼
+desc: 充满压抑感的破旧地穴,通过地上散乱的需求和文档足以想象出这里的统治者有多残酷
+flow:
+  - name: 办公楼1层
+    conditions: null
+    looters:
+      - LOOTER_OFFICE_1;[1,1] # 楼下大爷
+  - name: 小花园
+    conditions: null
+    looters:
+      - LOOTER_OFFICE_2;[1,1] # 种花大妈
+  - name: 办公室2层
+    conditions:
+      - name: 打完第一层
+        condition:
+          - $finish 办公楼1层
+    looters:
+      - LOOTER_OFFICE_3;[1,1] # 前台小姐姐
+  - name: 办公室3层
+    conditions:
+      - name: 打完第二层
+        condition:
+          - $finish 办公室2层
+    looters:
+      - LOOTER_OFFICE_4;[1,1] # 至高无上的程序员
