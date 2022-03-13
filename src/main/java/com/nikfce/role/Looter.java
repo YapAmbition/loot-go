@@ -111,6 +111,10 @@ public abstract class Looter implements Combative {
         return basicProperties.attack + effectProperties.attack + tmpProperties.attack;
     }
 
+    public List<Skill> getSkillList() {
+        return skillList;
+    }
+
     /**
      * 基础防御力
      */

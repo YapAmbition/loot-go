@@ -9,9 +9,7 @@ import com.nikfce.role.Looter;
 import com.nikfce.scene.Flow;
 import com.nikfce.scene.IntrudeContext;
 import com.nikfce.scene.Scene;
-import com.nikfce.stage.Battle;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -63,20 +61,20 @@ public class SceneGame {
         waitSecond();
         System.out.println("场景生成完毕! -> " + scene.getName());
         IntrudeContext intrudeContext = new IntrudeContext(Collections.singletonList(looter));
-        List<Flow> displayFlows = scene.showFlow(intrudeContext);
-        System.out.println("你的面前呈现出了几个Flow,请选择一个攻击:");
-        System.out.println(displayFlows);
-        String flowName = waitInput();
-        System.out.println("ok,正在为你生成敌人...");
-        List<Looter> enemies = scene.choiceFlow(flowName);
-        waitSecond();
-        System.out.println("敌人生成完毕,开始战斗!");
-        Battle battle = new Battle(Collections.singletonList(looter), enemies);
-        boolean win = battle.battleStart();
+
+        boolean win = true ;
+        while (win && !scene.passAll()) {
+            List<Flow> displayFlows = scene.showFlow(intrudeContext);
+            System.out.println("你的面前呈现出了几个Flow,请选择一个攻击:");
+            System.out.println(displayFlows);
+            String flowName = waitInput();
+            win = scene.interFlow(intrudeContext, flowName);
+        }
+
         if (win) {
-            System.out.println("你赢了");
+            System.out.println("恭喜你战胜通关" + sceneName + "!");
         } else {
-            System.out.println("你输了");
+            System.out.println("游戏失败!");
         }
     }
 

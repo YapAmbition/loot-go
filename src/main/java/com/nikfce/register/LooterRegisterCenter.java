@@ -110,11 +110,14 @@ public class LooterRegisterCenter {
     public static void registerLooterFromSrc() {
         String scanPackage = LootConfig.getInstance().getLooterPackage();
         Reflections reflections = new Reflections(scanPackage);
-        Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(LooterCode.class);
-        for (Class<?> clazz : skillSet) {
+        Set<Class<?>> looterSet = reflections.getTypesAnnotatedWith(LooterCode.class);
+        for (Class<?> clazz : looterSet) {
             if (clazz.isInterface()) {
                 continue;
             }
+            LooterCode looterCodeAnno = clazz.getAnnotation(LooterCode.class);
+            String looterCode = looterCodeAnno.value();
+            LOG.info("准备注册looter: {}, code: {}", clazz.getSimpleName(), looterCode);
             LooterRegisterCenter.register((Class<? extends Looter>)clazz);
         }
     }

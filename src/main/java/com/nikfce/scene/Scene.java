@@ -15,7 +15,6 @@ import java.util.Random;
  */
 public class Scene implements Checkable {
 
-    private static final Random random = new Random();
     private String name;
     private String desc;
     private List<Flow> flow;
@@ -57,52 +56,32 @@ public class Scene implements Checkable {
         return displayFlow;
     }
 
-    public List<Looter> choiceFlow(String flowName) {
+    /**
+     * 进入指定的Flow,执行Flow的executeXXX方法
+     * @return 是否进入成功,如果返回false则表示进入失败,游戏结束
+     */
+    public boolean interFlow(IntrudeContext intrudeContext, String flowName) {
         for (Flow f : flow) {
             if (f.getName().equalsIgnoreCase(flowName)) {
                 if (f.isPass()) {
-                    throw new RuntimeException("此Flow已经通关了,不能重复攻击!" + flowName);
+                    throw new RuntimeException("此Flow已经通关了,不能重复进入!" + flowName);
                 }
-                return genFlowLooters(f);
+                return f.executeBattle(intrudeContext);
             }
         }
         throw new RuntimeException("改场景没有找到对应的FLow!" + flowName);
     }
 
-    private List<Looter> genFlowLooters(Flow f) {
-        List<String> list = f.getLooters();
-        for (String exp : list) {
-            String[] kv = exp.trim().split(";");
-            String looterCode = kv[0];
-            String numberExp = kv[1];
-            int count = explainNumberExp(numberExp);
-            List<Looter> result = new ArrayList<>();
-            for (int i = 0 ; i < count ; i ++) {
-                Looter looter = LooterRegisterCenter.generateLooter(looterCode);
-                result.add(looter);
-            }
-            return result;
-        }
-        throw new RuntimeException("没有找到looter表达式!" + f.getName());
-    }
-
     /**
-     * 解析数量表达式,目前只支持整数开闭区间
-     * 例如: [1,2], (2, 3], [1, 4)
+     * 这个场景是否全部通过
      */
-    private int explainNumberExp(String exp) {
-        String[] kv = exp.trim().split(",");
-        char lc = kv[0].charAt(0);
-        char rc = kv[1].charAt(kv[1].length() - 1);
-        int ln = Integer.parseInt(kv[0].substring(1).trim());
-        int rn = Integer.parseInt(kv[1].substring(0, kv[1].length() - 1));
-        if (lc != '[' && lc != '(') throw new RuntimeException("左区间必须用'('或者'['表示:" + exp);
-        if (rc != ']' && rc != ')') throw new RuntimeException("右区间必须用')'或者']'表示:" + exp);
-        if (lc == '(') ln ++;
-        if (rc == ')') rn --;
-        if (ln > rn) throw new RuntimeException("左区间必须小于右区间:" + exp);
-        if (ln == rn) return ln;
-        return ln + random.nextInt(rn - ln + 1);
+    public boolean passAll() {
+        for (Flow f : flow) {
+            if (!f.isPass()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
