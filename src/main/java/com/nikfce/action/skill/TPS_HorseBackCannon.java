@@ -4,6 +4,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.action.TriggerPassiveSkill;
 import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillName;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.stage.RoundLifecycle;
@@ -20,8 +21,10 @@ import java.util.stream.Collectors;
  * @author shenzhencheng 2022/3/10
  */
 @SkillCode("SK_9")
+@SkillName("马后炮")
 public class TPS_HorseBackCannon implements TriggerPassiveSkill {
 
+    private String skillName;
     private final Random random = new Random();
 
     @Override
@@ -31,7 +34,11 @@ public class TPS_HorseBackCannon implements TriggerPassiveSkill {
 
     @Override
     public String name() {
-        return "马后炮";
+        if (skillName == null) {
+            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
+            this.skillName = skillName.value();
+        }
+        return this.skillName;
     }
 
     @Override

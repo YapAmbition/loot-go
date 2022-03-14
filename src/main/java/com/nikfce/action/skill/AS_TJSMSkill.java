@@ -4,6 +4,7 @@ import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillName;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
  * @author shenzhencheng 2022/3/10
  */
 @SkillCode("SK_4")
+@SkillName("田忌赛马")
 public class AS_TJSMSkill implements ActiveSKill {
+
+    private String skillName;
 
     @Override
     public List<Looter> selectTargets(SkillContext skillContext) {
@@ -53,6 +57,10 @@ public class AS_TJSMSkill implements ActiveSKill {
 
     @Override
     public String name() {
-        return "田忌赛马";
+        if (skillName == null) {
+            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
+            this.skillName = skillName.value();
+        }
+        return this.skillName;
     }
 }

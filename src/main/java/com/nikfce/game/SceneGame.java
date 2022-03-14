@@ -37,7 +37,7 @@ public class SceneGame {
         // 首先同样的,要初始化配置,技能,角色,场景
         LootConfig.init();
         // 注册代码中定义的技能
-        SkillRegisterCenter.registerSkillFromConfig();
+        SkillRegisterCenter.registerSkillFromSrc();
         // 注册代码中定义的角色
         LooterRegisterCenter.registerLooterFromSrc();
         // 注册配置文件中定义的角色

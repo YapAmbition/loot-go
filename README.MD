@@ -94,3 +94,4 @@ ok,修改了以下Flow类和Scene类,战斗是Flow类的executeBattle触发的,�
 新增Flow类的奖励机制,目前的奖励是入侵者可以获得敌人的技能,以后可以通过配置文件,用关键字来定义奖励
 新增Scene的passAll()方法,判断这个Scene是否全部结束
 现在的SceneGame已经是一个有点意思的游戏了!!
+为技能新增SKillName注解,来标识每个技能的名字

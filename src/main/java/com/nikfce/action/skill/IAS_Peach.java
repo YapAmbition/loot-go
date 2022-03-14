@@ -4,6 +4,7 @@ import com.nikfce.action.Effect;
 import com.nikfce.action.IntensifyActiveSkill;
 import com.nikfce.action.SkillContext;
 import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillName;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -18,8 +19,10 @@ import java.util.List;
  * @author shenzhencheng 2022/3/10
  */
 @SkillCode("SK_5")
+@SkillName("桃")
 public class IAS_Peach implements IntensifyActiveSkill {
 
+    private String skillName;
     private int canUseCount = 3;
 
     @Override
@@ -45,7 +48,11 @@ public class IAS_Peach implements IntensifyActiveSkill {
 
     @Override
     public String name() {
-        return "桃";
+        if (skillName == null) {
+            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
+            this.skillName = skillName.value();
+        }
+        return this.skillName;
     }
 
     @Override

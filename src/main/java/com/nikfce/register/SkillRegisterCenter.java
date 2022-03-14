@@ -2,13 +2,13 @@ package com.nikfce.register;
 
 import com.nikfce.action.Skill;
 import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillName;
 import com.nikfce.config.LootConfig;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -29,11 +29,20 @@ public class SkillRegisterCenter {
         if (code == null) {
             throw new RuntimeException("SkillCode不允许为null");
         }
+
+        SkillName skillName = clazz.getAnnotation(SkillName.class);
+        String name = skillName.value();
+        if (name == null) {
+            throw new RuntimeException("SkillName不允许为null");
+        }
+
+        // 已经注册过的直接跳过
         if (SKILL_MAP.containsKey(code)) {
-            System.out.println("该技能已经注册过了,直接跳过: " + skillCode);
             return ;
         }
+
         SKILL_MAP.put(code, clazz);
+        LOG.info("成功注册技能: code: {}, name: {}", code, name);
     }
 
     /**
@@ -54,7 +63,7 @@ public class SkillRegisterCenter {
     /**
      * 注册源文件中的技能
      */
-    public static void registerSkillFromConfig() {
+    public static void registerSkillFromSrc() {
         String scanPackage = LootConfig.getInstance().getSkillPackage();
         Reflections reflections = new Reflections(scanPackage);
         Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(SkillCode.class);
@@ -62,9 +71,13 @@ public class SkillRegisterCenter {
             if (clazz.isInterface()) {
                 continue;
             }
-            LOG.info("注本注册技能: {}", clazz.getName());
             SkillRegisterCenter.register((Class<? extends Skill>)clazz);
         }
+    }
+
+    public static void main(String[] args) {
+        LootConfig.init();
+        registerSkillFromSrc();
     }
 
 }

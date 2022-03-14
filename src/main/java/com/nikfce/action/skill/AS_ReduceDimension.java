@@ -4,6 +4,7 @@ import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillName;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -18,8 +19,10 @@ import java.util.stream.Collectors;
  * @author shenzhencheng 2022/3/10
  */
 @SkillCode("SK_2")
+@SkillName("降维打击")
 public class AS_ReduceDimension implements ActiveSKill {
 
+    private String skillName;
     private Looter target;
 
     @Override
@@ -51,7 +54,11 @@ public class AS_ReduceDimension implements ActiveSKill {
 
     @Override
     public String name() {
-        return "降维打击";
+        if (skillName == null) {
+            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
+            this.skillName = skillName.value();
+        }
+        return this.skillName;
     }
 
     @Override

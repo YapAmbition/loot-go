@@ -3,6 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.PropertiesPassiveSkill;
 import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillName;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -13,7 +14,10 @@ import com.nikfce.thread.ThreadLocalMap;
  * @author shenzhencheng 2022/3/11
  */
 @SkillCode("SK_7")
+@SkillName("完美大腿")
 public class PPS_PerfectLeg implements PropertiesPassiveSkill {
+
+    private String skillName;
 
     @Override
     public void battleStart(Looter myself) {
@@ -26,6 +30,10 @@ public class PPS_PerfectLeg implements PropertiesPassiveSkill {
 
     @Override
     public String name() {
-        return "完美大腿";
+        if (skillName == null) {
+            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
+            this.skillName = skillName.value();
+        }
+        return this.skillName;
     }
 }
