@@ -43,7 +43,7 @@ public class IAS_Peach implements IntensifyActiveSkill {
         canUseCount --;
         Looter me = skillContext.user;
         double recover = me.currentMaxHp() / 2.0;
-        ThreadLocalMap.getRecorder().record_f("%s不慌不忙地使用了%s,为自己恢复了%s的血量", me.getName(), name(), recover);
+        ThreadLocalMap.getRecorder().record_f("[%s]不慌不忙地使用了[%s],为自己恢复了[%s]的血量", me.getName(), name(), recover);
         Properties properties = Properties.PropertiesBuilder.create().setHp(recover).build();
         return new Effect(properties);
     }

@@ -45,7 +45,7 @@ public class PPS_PerfectBody implements PropertiesPassiveSkill {
     public void battleStart(Looter myself) {
         double physique = myself.basicPhysique();
         double increment = physique * 0.2;
-        ThreadLocalMap.getRecorder().record_f("%s发动[%s],增加自己%s的体质", myself.getName(), name(), increment);
+        ThreadLocalMap.getRecorder().record_f("[%s]发动[%s]被动技能,增加自己[%s]的体质", myself.getName(), name(), increment);
         Properties properties = Properties.PropertiesBuilder.create().setPhysique(increment).setApplyAttribute(true).build();
         myself.intensified(myself, skillName, new Effect(properties));
     }

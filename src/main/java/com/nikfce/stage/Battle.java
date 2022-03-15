@@ -43,10 +43,10 @@ public class Battle {
                 throw new RuntimeException("回合数超限,一定是出了什么问题");
             }
             ThreadLocalMap.getRecorder().record("------------------------------");
-            ThreadLocalMap.getRecorder().record("开始第" + roundCount + "回合");
+            ThreadLocalMap.getRecorder().record("开始第[" + roundCount + "]回合");
             // 找到下次行动的角色
             Looter currentLooter = actionPlan.next();
-            ThreadLocalMap.getRecorder().record("当前攻击的角色为:" + currentLooter.getName());
+            ThreadLocalMap.getRecorder().record_f("当前攻击的角色为: [%s]", currentLooter.getName());
             // 角色
             RoundContext roundContext;
             if (isPlayer(currentLooter)) {
@@ -60,7 +60,7 @@ public class Battle {
             battleFinishEnumState = battleFinishState();
         }
         callBattleEnd();
-        ThreadLocalMap.getRecorder().record_f(">>>战斗结束,共%s回合<<<", roundCount);
+        ThreadLocalMap.getRecorder().record_f(">>>战斗结束,共[%s]回合<<<", roundCount);
         boolean result = handleBattleFinish(battleFinishEnumState);
         ThreadLocalMap.getRecorder().record("==============================");
         return result;
@@ -124,10 +124,10 @@ public class Battle {
     private boolean handleBattleFinish(BattleFinishEnum battleFinishEnum) {
         switch (battleFinishEnum) {
             case PLAYER_ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(enemies.stream().map(Looter::getName).collect(Collectors.toList())));
+                ThreadLocalMap.getRecorder().record_f("[%s]获胜", JSON.toJSONString(enemies.stream().map(Looter::getName).collect(Collectors.toList())));
                 return false;
             case ENEMIES_ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(players.stream().map(Looter::getName).collect(Collectors.toList())));
+                ThreadLocalMap.getRecorder().record_f("[%s]获胜", JSON.toJSONString(players.stream().map(Looter::getName).collect(Collectors.toList())));
                 return true;
             default:
                 throw new RuntimeException("未知的结束状态:" + battleFinishEnum);

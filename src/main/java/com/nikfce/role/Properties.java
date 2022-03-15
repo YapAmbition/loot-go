@@ -205,42 +205,42 @@ public class Properties {
     public String calChangeValueLog() {
         StringBuilder sb = new StringBuilder();
         if (physique != 0) {
-            sb.append("physique: ").append(physique > 0 ? "+" : "-").append(physique).append(";");
+            sb.append("体质: ").append(physique > 0 ? "+" : "-").append(physique).append(";");
         }
         if (strength != 0) {
-            sb.append("strength: ").append(strength > 0 ? "+" : "-").append(strength).append(";");
+            sb.append("力量: ").append(strength > 0 ? "+" : "-").append(strength).append(";");
         }
         if (agility != 0) {
-            sb.append("agility: ").append(agility > 0 ? "+" : "-").append(agility).append(";");
+            sb.append("敏捷: ").append(agility > 0 ? "+" : "-").append(agility).append(";");
         }
         if (maxHp != 0) {
-            sb.append("maxHp: ").append(maxHp > 0 ? "+" : "-").append(maxHp).append(";");
+            sb.append("血量上限: ").append(maxHp > 0 ? "+" : "-").append(maxHp).append(";");
         }
         if (hp != 0) {
-            sb.append("hp: ").append(hp > 0 ? "+" : "-").append(hp).append(";");
+            sb.append("当前血量: ").append(hp > 0 ? "+" : "-").append(hp).append(";");
         }
         if (attack != 0) {
-            sb.append("attack: ").append(attack > 0 ? "+" : "-").append(attack).append(";");
+            sb.append("攻击力: ").append(attack > 0 ? "+" : "-").append(attack).append(";");
         }
         if (defence != 0) {
-            sb.append("defence: ").append(defence > 0 ? "+" : "-").append(defence).append(";");
+            sb.append("防御力: ").append(defence > 0 ? "+" : "-").append(defence).append(";");
         }
         if (strike != 0) {
-            sb.append("strike: ").append(strike > 0 ? "+" : "-").append(strike).append(";");
+            sb.append("暴击率: ").append(strike > 0 ? "+" : "-").append(strike).append(";");
         }
         if (speed != 0) {
-            sb.append("speed: ").append(speed > 0 ? "+" : "-").append(speed).append(";");
+            sb.append("速度: ").append(speed > 0 ? "+" : "-").append(speed).append(";");
         }
         if (dodge != 0) {
-            sb.append("dodge: ").append(dodge > 0 ? "+" : "-").append(dodge).append(";");
+            sb.append("闪避: ").append(dodge > 0 ? "+" : "-").append(dodge).append(";");
         }
         if (luck != 0) {
-            sb.append("luck: ").append(luck > 0 ? "+" : "-").append(luck).append(";");
+            sb.append("幸运: ").append(luck > 0 ? "+" : "-").append(luck).append(";");
         }
         if (sb.length() > 0) {
             return sb.toString();
         }
-        return "未发生任何变化";
+        return "属性未发生任何变化";
     }
 
     public boolean isEmpty() {

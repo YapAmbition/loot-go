@@ -50,7 +50,7 @@ public class AS_TJSMSkill implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack() * 1.5;
         boolean strike = me.calCauseStrike();
-        ThreadLocalMap.getRecorder().record_f("%s使出一招%s,选取敌方的上等马进行攻击", me.getName(), name());
+        ThreadLocalMap.getRecorder().record_f("[%s]使出一招[%s],选取敌方的上等马进行攻击", me.getName(), name());
         Properties properties = Properties.PropertiesBuilder.create()
                 .setHp(-(strike ? 2.0 * damage : damage))
                 .build();

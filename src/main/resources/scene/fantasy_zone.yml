@@ -1,0 +1,22 @@
+name: 幻极仙踪
+desc: 这是一座漂浮在云上的巨石,周围雾气缭绕仿佛仙境,天边却倒吊着无数把利刃,与此处的气氛格格不入
+flow:
+  - name: 林玉亭
+    conditions: null
+    looters:
+      - LOOTER_FANTASY_ZONE_1;[1,1]
+  - name: 钟乳阁
+    conditions:
+      - name: 通关林玉亭
+        condition:
+          - $finish 林玉亭
+    looters:
+      - LOOTER_FANTASY_ZONE_1;[1,2]
+clearCondition:
+  - name: 打完所有房间
+    clearDesc: 你解除了幻极仙踪的幻境,回到了现实
+    conditions:
+      - name: 解决完所有房间
+        condition:
+          - $finish 林玉亭
+          - $finish 钟乳阁

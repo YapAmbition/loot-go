@@ -30,7 +30,7 @@ public class PPS_PerfectLeg implements PropertiesPassiveSkill {
     public void battleStart(Looter myself) {
         double agility = myself.basicAgility();
         double increment = agility * 0.20;
-        ThreadLocalMap.getRecorder().record_f("%s发动[%s],增加自己%s的敏捷", myself.getName(), name(), increment);
+        ThreadLocalMap.getRecorder().record_f("[%s]发动[%s]被动技能,增加自己[%s]的敏捷", myself.getName(), name(), increment);
         Properties properties = Properties.PropertiesBuilder.create().setAgility(increment).setApplyAttribute(true).build();
         myself.intensified(myself, skillName, new Effect(properties));
     }

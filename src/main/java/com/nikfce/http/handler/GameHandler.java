@@ -8,6 +8,7 @@ import com.nikfce.http.user.TokenGenerator;
 import com.nikfce.http.user.User;
 import com.nikfce.http.util.CookieUtil;
 import com.nikfce.recoder.BufferRecorder;
+import com.nikfce.recoder.ListBufferRecorder;
 import com.nikfce.register.LooterRegisterCenter;
 import com.nikfce.register.SceneRegisterCenter;
 import com.nikfce.role.Looter;
@@ -175,15 +176,14 @@ public class GameHandler {
                 if (f.isPass()) {
                     FlowResponse flowResponse = new FlowResponse();
                     flowResponse.setWin(true);
-                    flowResponse.setLog("该房间早已被你洗劫一空了");
+                    flowResponse.setLogs(Collections.singletonList("这里早就被你洗劫一空了"));
                     return flowResponse;
                 } else {
-                    StringBuilder logSb = new StringBuilder();
                     IntrudeContext intrudeContext = new IntrudeContext(Collections.singletonList(userSpace.getLooter()));
-                    BufferRecorder bufferRecorder = new BufferRecorder();
-                    ThreadLocalMap.setRecorder(bufferRecorder);
+                    ListBufferRecorder listBufferRecorder = new ListBufferRecorder();
+                    ThreadLocalMap.setRecorder(listBufferRecorder);
                     boolean win = f.executeBattle(intrudeContext);
-                    logSb.append(bufferRecorder.flush());
+                    List<String> logs = new ArrayList<>(listBufferRecorder.flush());
                     ThreadLocalMap.useDefaultRecorder();
                     if (win) {
                         f.setPass(true);
@@ -191,16 +191,16 @@ public class GameHandler {
                         String desc = scene.clearScene(intrudeContext);
                         if (desc != null) {
                             userSpace.setCurrentScene(null);
-                            logSb.append(desc).append('\n');
+                            logs.add(desc);
                         }
                     } else {
                         userSpace.setLose(true);
-                        logSb.append("很遗憾,").append(userSpace.getUser().getName()).append(", 你就是这样不堪一击? hhhhh...").append('\n');
+                        logs.add(String.format("很遗憾,%s,你就是这样不堪一击,hhhhh...", userSpace.getUser().getName()));
                     }
                     GameArchive.save(userSpace);
                     FlowResponse flowResponse = new FlowResponse();
                     flowResponse.setWin(win);
-                    flowResponse.setLog(logSb.toString());
+                    flowResponse.setLogs(logs);
                     return flowResponse;
                 }
             }

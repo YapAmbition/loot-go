@@ -24,6 +24,8 @@ public class AS_NormalAttack implements ActiveSKill {
     private final String skillName;
     private final String skillDesc;
 
+    private Looter target;
+
     public AS_NormalAttack() {
         SkillSummary skillSummary = AS_NormalAttack.class.getAnnotation(SkillSummary.class);
         this.skillCode = skillSummary.code();
@@ -35,7 +37,7 @@ public class AS_NormalAttack implements ActiveSKill {
     public List<Looter> selectTargets(SkillContext skillContext) {
         List<Looter> enemies = skillContext.enemy;
         List<Looter> candidate = enemies.stream().filter(a -> !a.isDead()).collect(Collectors.toList());
-        Looter target = candidate.get(new Random().nextInt(candidate.size()));
+        target = candidate.get(new Random().nextInt(candidate.size()));
         return Collections.singletonList(target);
     }
 
@@ -44,7 +46,7 @@ public class AS_NormalAttack implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack();
         boolean strike = me.calCauseStrike();
-        ThreadLocalMap.getRecorder().record_f("%s对使出一招普通攻击,这一招一看就有足足%s的威力", me.getName(), damage);
+        ThreadLocalMap.getRecorder().record_f("[%s]对[%s]使出一招普通攻击,这一招一看就有足足[%s]的威力", me.getName(), target.getName(), damage);
         if (strike) {
             damage = damage * 2.0;
         }
@@ -72,5 +74,10 @@ public class AS_NormalAttack implements ActiveSKill {
     @Override
     public String desc() {
         return skillDesc;
+    }
+
+    @Override
+    public void roundEnd(Looter myself) {
+        target = null;
     }
 }

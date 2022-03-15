@@ -30,7 +30,7 @@ public class PPS_PerfectMuscle implements PropertiesPassiveSkill {
     public void battleStart(Looter myself) {
         double strength = myself.basicStrength();
         double increment = strength * 0.20;
-        ThreadLocalMap.getRecorder().record_f("%s的被动技能[%s],为自己增加了%s的基础力量", myself.getName(), name(), increment);
+        ThreadLocalMap.getRecorder().record_f("[%s]的被动技能[%s],为自己增加了[%s]的基础力量", myself.getName(), name(), increment);
         Properties properties = Properties.PropertiesBuilder.create().setStrength(increment).setApplyAttribute(true).build();
         myself.intensified(myself, skillName, new Effect(properties));
     }

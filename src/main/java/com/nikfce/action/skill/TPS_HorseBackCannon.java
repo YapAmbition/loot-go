@@ -59,7 +59,7 @@ public class TPS_HorseBackCannon implements TriggerPassiveSkill {
         List<Looter> looterList = skillContext.enemy;
         Looter me = skillContext.user;
         double damage = me.currentAttack() * 0.7;
-        ThreadLocalMap.getRecorder().record_f("%s的被动技能[%s]生效,将对攻击他的敌人:%s进行伤害为:%s的反击", me.getName(), name(), looterList.stream().map(Looter::getName).collect(Collectors.joining(",")), damage);
+        ThreadLocalMap.getRecorder().record_f("[%s]的被动技能[%s]生效,将对攻击他的敌人[%s]造成伤害为[%s]的反击", me.getName(), name(), looterList.stream().map(Looter::getName).collect(Collectors.joining(",")), damage);
         for (Looter looter : looterList) {
             boolean strike = me.calCauseStrike();
             Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * damage : damage)).build();

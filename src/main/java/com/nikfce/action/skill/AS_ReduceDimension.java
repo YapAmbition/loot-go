@@ -46,7 +46,7 @@ public class AS_ReduceDimension implements ActiveSKill {
         double damage = me.currentAttack() * 1.2;
         double downDefence = target.basicDefence() * 0.3;
         boolean strike = me.calCauseStrike();
-        ThreadLocalMap.getRecorder().record_f("%s对%s使出一招降维打击,减少其%s的防御并造成%s的伤害", me.getName(), target.getName(), downDefence, damage);
+        ThreadLocalMap.getRecorder().record_f("[%s]对[%s]使出一招降维打击,减少其[%s]的防御并造成[%s]的伤害", me.getName(), target.getName(), downDefence, damage);
         if (strike) {
             damage = damage * 2.0;
         }

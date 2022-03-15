@@ -247,7 +247,7 @@ public class Looter implements Combative {
         SkillContext preSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
         List<Looter> targets = activeSKill.selectTargets(preSkillContext);
 
-        ThreadLocalMap.getRecorder().record_f(name + "决定对" + targets.stream().map(Looter::getName).collect(Collectors.joining(",")) + "使用" + activeSKill.name());
+        ThreadLocalMap.getRecorder().record_f("[%s]决定对[%s]使用[%s]", name, targets.stream().map(Looter::getName).collect(Collectors.joining(",")), activeSKill.name());
 
         SkillContext actualSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, targets, null);
         if (activeSKill instanceof IntensifyActiveSkill) {
@@ -268,7 +268,7 @@ public class Looter implements Combative {
 
     @Override
     public void beAttack(Looter attacker, Effect effect) {
-        ThreadLocalMap.getRecorder().record_f(name + "受到了来自" + attacker.getName() + "的攻击");
+        ThreadLocalMap.getRecorder().record_f("[%s]收到了来自[%s]的攻击", name, attacker.getName());
 
         SkillContext skillContext = new SkillContext(RoundLifecycle.BEFORE_BE_ATTACK, this, Collections.singletonList(attacker), effect);
         passiveSkillAffect(skillContext);
@@ -276,7 +276,7 @@ public class Looter implements Combative {
         // 计算角色的闪避值,并进行闪避判定
         double dodge = currentDodge();
         if (random.nextInt(100) < dodge) {
-            ThreadLocalMap.getRecorder().record_f("%s闪过了%s攻击,自己竟毫发未损!", name, attacker.getName());
+            ThreadLocalMap.getRecorder().record_f("[%s]闪过了[%s]攻击,自己竟毫发未损!", name, attacker.getName());
         } else {
             // 计算并应用伤害,返回实际造成的伤害
             Effect actualEffect = calAndApplyEffect(skillContext);
@@ -285,9 +285,9 @@ public class Looter implements Combative {
             passiveSkillAffect(actualSkillContext);
 
             if (actualEffect.strike) {
-                ThreadLocalMap.getRecorder().record_f("%s的这次攻击竟然产生了暴击!", attacker.getName());
+                ThreadLocalMap.getRecorder().record_f("[%s]的这次攻击竟然产生了暴击!", attacker.getName());
             }
-            ThreadLocalMap.getRecorder().record_f(name + "最终受到" + actualEffect.properties.hp + "点伤害");
+            ThreadLocalMap.getRecorder().record_f("[%s]最终受到[%s]点伤害", name, actualEffect.properties.hp);
 
             // 回调攻击者的攻击结束接口,并告诉它实际造成的伤害是多少
             attacker.attackFinish(this, actualEffect);
@@ -336,7 +336,7 @@ public class Looter implements Combative {
      */
     @Override
     public void intensified(Looter from, String byName, Effect effect) {
-        ThreadLocalMap.getRecorder().record_f("来自%s的%s生效!", from.getName(), byName);
+        ThreadLocalMap.getRecorder().record_f("来自[%s]的[%s]生效了!", from.getName(), byName);
         ThreadLocalMap.getRecorder().record_f(effect.properties.calChangeValueLog());
         effectProperties.mergeProperties(effect.properties);
         if (currentHp() > currentMaxHp()) {
