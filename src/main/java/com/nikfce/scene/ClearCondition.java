@@ -15,7 +15,7 @@ import java.util.List;
 public class ClearCondition implements Checkable {
 
     private String name;
-    // 场景都被清理结束后,返回的描述
+    // 地图都被清理结束后,返回的描述
     private String clearDesc;
     private List<Condition> conditions;
 
@@ -35,10 +35,10 @@ public class ClearCondition implements Checkable {
     @Override
     public void check() throws RuntimeException {
         if (StringUtil.isEmpty(clearDesc)) {
-            throw new RuntimeException("场景的结束描述不能为空: " + name);
+            throw new RuntimeException("地图的结束描述不能为空: " + name);
         }
         if (CollectionUtil.isEmpty(conditions)) {
-            throw new RuntimeException("场景的结束条件不能为空: " + name);
+            throw new RuntimeException("地图的结束条件不能为空: " + name);
         }
     }
 

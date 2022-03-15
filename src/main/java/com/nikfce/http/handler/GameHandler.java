@@ -54,7 +54,7 @@ public class GameHandler {
     }
 
     /**
-     * 为用户展示接下来要看到的场景
+     * 为用户展示接下来要看到的地图
      */
     public NextDto next() {
         UserSpace userSpace = getUserSpace();
@@ -84,8 +84,8 @@ public class GameHandler {
             nextDto.setDesc(String.format("恭喜你, %s, 你通关了,但是你以为Looter的世界就到此为止了吗? hhhhh...", userSpace.getUser().getName()));
             return nextDto;
         } else if (userSpace.getCurrentScene() == null) {
-            // 然后判断是否已经进入某个场景了,如果没进则返回场景列表让用户选择
-            // 表示用户还没有进入任何场景,需要返回场景供用户选择
+            // 然后判断是否已经进入某个地图了,如果没进则返回地图列表让用户选择
+            // 表示用户还没有进入任何地图,需要返回地图供用户选择
             List<SceneDTO> sceneDTOList = new ArrayList<>();
             for (String sceneName : SceneRegisterCenter.showSceneList()) {
                 Scene scene = SceneRegisterCenter.generateScene(sceneName);
@@ -98,7 +98,7 @@ public class GameHandler {
             nextDto.setSceneList(sceneDTOList);
             return nextDto;
         } else {
-            // 展示当前场景的Flow
+            // 展示当前地图的Flow
             Scene currentScene = userSpace.getGoneSceneMap().get(userSpace.getCurrentScene());
             if (currentScene == null) {
                 userSpace.setCurrentScene(null);
@@ -121,7 +121,7 @@ public class GameHandler {
     }
 
     /**
-     * 选择场景
+     * 选择地图
      */
     public void choiceScene(String sceneName) {
         UserSpace userSpace = getUserSpace();
@@ -130,7 +130,7 @@ public class GameHandler {
         }
         // 检查合法性
         if (!SceneRegisterCenter.showSceneList().contains(sceneName)) {
-            throw new RuntimeException("本游戏没有这个场景: " + sceneName);
+            throw new RuntimeException("本游戏没有这个地图: " + sceneName);
         }
         // 设置当前scene
         userSpace.setCurrentScene(sceneName);
@@ -152,19 +152,20 @@ public class GameHandler {
     }
 
     /**
-     * 选择场景flow,战斗!
+     * 选择地图flow,战斗!
      */
     public FlowResponse choiceFlow(String flow) {
         UserSpace userSpace = getUserSpace();
         if (userSpace.getCurrentScene() == null) {
-            throw new RuntimeException("当前还没有进入任何场景");
+            throw new RuntimeException("当前还没有进入任何地图");
         }
         // 检查合法性
         String currentScene = userSpace.getCurrentScene();
         if (!SceneRegisterCenter.showSceneList().contains(currentScene)) {
-            throw new RuntimeException("本游戏根本没有这个场景啊: " + currentScene);
+            userSpace.setCurrentScene(null);
+            throw new RuntimeException("本游戏根本没有这个地图啊: " + currentScene + ",重新选择地图吧");
         }
-        // 选择该场景中的指定Flow,并战斗
+        // 选择该地图中的指定Flow,并战斗
         if (!userSpace.getGoneSceneMap().containsKey(currentScene)) {
             userSpace.getGoneSceneMap().put(currentScene, SceneRegisterCenter.generateScene(currentScene));
         }

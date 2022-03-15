@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 场景类
+ * 地图类
  * @author shenzhencheng 2022/3/12
  */
 public class Scene implements Checkable {
@@ -51,7 +51,7 @@ public class Scene implements Checkable {
     }
 
     /**
-     * 返回当前场景能展示的Flow
+     * 返回当前地图能展示的Flow
      */
     public List<Flow> nextFlows(IntrudeContext intrudeContext) {
         List<Flow> displayFlow = new ArrayList<>();
@@ -76,11 +76,11 @@ public class Scene implements Checkable {
                 return f.executeBattle(intrudeContext);
             }
         }
-        throw new RuntimeException("改场景没有找到对应的FLow!" + flowName);
+        throw new RuntimeException("该地图没有找到对应的FLow!" + flowName);
     }
 
     /**
-     * 这个场景是否清理完毕
+     * 这个地图是否清理完毕
      * @return 如果清理完毕,则返回清理完毕的描述,否则返回null
      */
     public String clearScene(IntrudeContext intrudeContext) {

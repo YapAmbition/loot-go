@@ -1,6 +1,8 @@
 package com.nikfce.http.controller;
 
 import com.nikfce.http.archive.GameArchive;
+import com.nikfce.register.LooterRegisterCenter;
+import com.nikfce.register.SceneRegisterCenter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +36,24 @@ public class DebugController {
     @RequestMapping("/query")
     public Object query(String token) {
         return GameArchive.load(token);
+    }
+
+    /**
+     * 重新加载场景配置文件
+     */
+    @RequestMapping("/reloadScene")
+    public Object reloadScene() {
+        SceneRegisterCenter.registerSceneFromConfig();
+        return SceneRegisterCenter.showSceneList();
+    }
+
+    /**
+     * 重新加载Looter配置文件
+     */
+    @RequestMapping("/reloadLooter")
+    public Object reloadLooter() {
+        LooterRegisterCenter.registerLooterFromConfig();
+        return LooterRegisterCenter.listLooters();
     }
 
 }
