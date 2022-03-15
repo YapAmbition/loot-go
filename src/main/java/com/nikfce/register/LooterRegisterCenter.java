@@ -2,19 +2,14 @@ package com.nikfce.register;
 
 import com.alibaba.fastjson.JSON;
 import com.nikfce.action.Skill;
-import com.nikfce.annotation.LooterCode;
-import com.nikfce.config.LootConfig;
 import com.nikfce.role.*;
+import com.nikfce.role.Properties;
 import com.nikfce.util.StringUtil;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,22 +23,7 @@ public class LooterRegisterCenter {
     /**
      * 这里的value暂且同时Class和LooterDefinition,后续只存LooterDefinition
      */
-    private static final Map<String, Object> LOOTER_MAP = new ConcurrentHashMap<>();
-
-    public synchronized static void register(Class<? extends Looter> clazz) {
-        LooterCode looterCode = clazz.getAnnotation(LooterCode.class);
-        if (looterCode == null) {
-            throw new RuntimeException("该角色没有LooterCode注解,请添加!");
-        }
-        String code = looterCode.value();
-        if (code == null) {
-            throw new RuntimeException("LooterCode不允许为null");
-        }
-        if (LOOTER_MAP.containsKey(code)) {
-            throw new RuntimeException("该角色已经存在,不允许多次注册: " + code);
-        }
-        LOOTER_MAP.put(code, clazz);
-    }
+    private static final Map<String, LooterDefinition> LOOTER_MAP = new ConcurrentHashMap<>();
 
     /**
      * 通过LooterDefinition注册角色类
@@ -74,6 +54,7 @@ public class LooterRegisterCenter {
         }
 
         LOOTER_MAP.put(looterCode, looterDefinition);
+        LOG.info("成功注册looter: {}, code: {}", name, looterCode);
     }
 
     /**
@@ -83,43 +64,13 @@ public class LooterRegisterCenter {
         if (!LOOTER_MAP.containsKey(looterCode)) {
             throw new RuntimeException("该角色并没有注册:" + looterCode);
         }
-        Object object = LOOTER_MAP.get(looterCode);
-        if (object instanceof Class) {
-            Class<? extends Looter> clazz = (Class<? extends Looter>) object;
-            try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("生成Looter失败!" + looterCode);
-            }
-        } else if (object instanceof LooterDefinition) {
-            LooterDefinition looterDefinition = (LooterDefinition) object;
-            List<String> skillCodeList = looterDefinition.getSkillCodeList();
-            List<Skill> skillList = new ArrayList<>();
-            for (String skillCode : skillCodeList) {
-                skillList.add(SkillRegisterCenter.generateSkill(skillCode));
-            }
-            return new DynamicLooter(looterDefinition.getName(), looterDefinition.getBasicProperties(), skillList);
-        } else {
-            throw new RuntimeException("未知的注册类型,looterCode: " + looterCode + ", class:" + object.getClass().getName());
+        LooterDefinition looterDefinition = LOOTER_MAP.get(looterCode);
+        List<String> skillCodeList = looterDefinition.getSkillCodeList();
+        List<Skill> skillList = new ArrayList<>();
+        for (String skillCode : skillCodeList) {
+            skillList.add(SkillRegisterCenter.generateSkill(skillCode));
         }
-    }
-
-    /**
-     * 从源代码中注册角色
-     */
-    public static void registerLooterFromSrc() {
-        String scanPackage = LootConfig.getInstance().getLooterPackage();
-        Reflections reflections = new Reflections(scanPackage);
-        Set<Class<?>> looterSet = reflections.getTypesAnnotatedWith(LooterCode.class);
-        for (Class<?> clazz : looterSet) {
-            if (clazz.isInterface()) {
-                continue;
-            }
-            LooterCode looterCodeAnno = clazz.getAnnotation(LooterCode.class);
-            String looterCode = looterCodeAnno.value();
-            LOG.info("准备注册looter: {}, code: {}", clazz.getSimpleName(), looterCode);
-            LooterRegisterCenter.register((Class<? extends Looter>)clazz);
-        }
+        return new DynamicLooter(looterDefinition.getName(), looterDefinition.getCode(), looterDefinition.getBasicProperties(), skillList);
     }
 
     /**
@@ -129,14 +80,19 @@ public class LooterRegisterCenter {
         try {
             List<LooterDefinition> definitionList = LooterConfigParser.parseAll();
             for (LooterDefinition looterDefinition : definitionList) {
-                LOG.info("准备注册looter: {}, code: {}", looterDefinition.getName(), looterDefinition.getCode());
                 LooterRegisterCenter.register(looterDefinition);
             }
         } catch (IOException e) {
             LOG.error("解析文件错误!", e);
             throw new RuntimeException("解析文件错误!", e);
         }
+    }
 
+    /**
+     * 列出所有的looter码
+     */
+    public static Set<String> listLooters() {
+        return new HashSet<>(LOOTER_MAP.keySet());
     }
 
 }

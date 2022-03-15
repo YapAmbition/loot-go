@@ -1,13 +1,11 @@
 package com.nikfce.scene;
 
-import com.nikfce.register.LooterRegisterCenter;
-import com.nikfce.role.Looter;
 import com.nikfce.util.CollectionUtil;
 import com.nikfce.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 
 /**
  * 场景类
@@ -18,6 +16,7 @@ public class Scene implements Checkable {
     private String name;
     private String desc;
     private List<Flow> flow;
+    private List<ClearCondition> clearCondition;
 
     public String getName() {
         return name;
@@ -43,10 +42,18 @@ public class Scene implements Checkable {
         this.flow = flow;
     }
 
+    public List<ClearCondition> getClearCondition() {
+        return clearCondition;
+    }
+
+    public void setClearCondition(List<ClearCondition> clearCondition) {
+        this.clearCondition = clearCondition;
+    }
+
     /**
      * 返回当前场景能展示的Flow
      */
-    public List<Flow> showFlow(IntrudeContext intrudeContext) {
+    public List<Flow> nextFlows(IntrudeContext intrudeContext) {
         List<Flow> displayFlow = new ArrayList<>();
         for (Flow f : flow) {
             if (f.satisfy(intrudeContext, this)) {
@@ -73,15 +80,17 @@ public class Scene implements Checkable {
     }
 
     /**
-     * 这个场景是否全部通过
+     * 这个场景是否清理完毕
+     * @return 如果清理完毕,则返回清理完毕的描述,否则返回null
      */
-    public boolean passAll() {
-        for (Flow f : flow) {
-            if (!f.isPass()) {
-                return false;
+    public String clearScene(IntrudeContext intrudeContext) {
+        for (ClearCondition cc : clearCondition) {
+            String desc = cc.satisfy(intrudeContext, this);
+            if (desc != null) {
+                return desc;
             }
         }
-        return true;
+        return null;
     }
 
     @Override
@@ -97,4 +106,47 @@ public class Scene implements Checkable {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return name == null ? -1 : name.hashCode();
+    }
+
+    /**
+     * 重写equals方法和hashCode方法,在存档时,只要name相同,就认为是同一个Scene
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Scene && Objects.equals(name, ((Scene)obj).name);
+    }
+
+    /**
+     * 生成一个当前对象的快照(深拷贝)
+     */
+    public Scene snapshot() {
+        Scene copy = new Scene();
+        copy.setName(name);
+        copy.setDesc(desc);
+        copy.setFlow(copyFlow());
+        copy.setClearCondition(copyClearCondition());
+        return copy;
+    }
+
+    private List<ClearCondition> copyClearCondition() {
+        if (clearCondition == null) return null;
+        List<ClearCondition> copy = new ArrayList<>();
+        for (ClearCondition cc : clearCondition) {
+            copy.add(cc.snapshot());
+        }
+        return copy;
+    }
+
+    private List<Flow> copyFlow() {
+        if (flow == null) return null;
+        List<Flow> copy = new ArrayList<>();
+        for (Flow f : flow) {
+            Flow copyFlow = f.snapshot();
+            copy.add(copyFlow);
+        }
+        return copy;
+    }
 }

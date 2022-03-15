@@ -38,8 +38,6 @@ public class SceneGame {
         LootConfig.init();
         // 注册代码中定义的技能
         SkillRegisterCenter.registerSkillFromSrc();
-        // 注册代码中定义的角色
-        LooterRegisterCenter.registerLooterFromSrc();
         // 注册配置文件中定义的角色
         LooterRegisterCenter.registerLooterFromConfig();
         // 注册场景
@@ -53,7 +51,7 @@ public class SceneGame {
         String looterCode = waitInput();
         Looter looter = LooterRegisterCenter.generateLooter(looterCode);
         waitSecond();
-        System.out.println("角色生成完毕! -> " + looter.name);
+        System.out.println("角色生成完毕! -> " + looter.getName());
         System.out.println(JSON.toJSONString(SceneRegisterCenter.showSceneList()));
         System.out.println("请输入要进入的场景名...");
         String sceneName = waitInput();
@@ -63,8 +61,9 @@ public class SceneGame {
         IntrudeContext intrudeContext = new IntrudeContext(Collections.singletonList(looter));
 
         boolean win = true ;
-        while (win && !scene.passAll()) {
-            List<Flow> displayFlows = scene.showFlow(intrudeContext);
+        String desc = null;
+        while (win && (desc = scene.clearScene(intrudeContext)) == null) {
+            List<Flow> displayFlows = scene.nextFlows(intrudeContext);
             System.out.println("你的面前呈现出了几个Flow,请选择一个攻击:");
             System.out.println(displayFlows);
             String flowName = waitInput();
@@ -72,7 +71,7 @@ public class SceneGame {
         }
 
         if (win) {
-            System.out.println("恭喜你战胜通关" + sceneName + "!");
+            System.out.println("恭喜你战胜通关" + sceneName + "!" + desc);
         } else {
             System.out.println("游戏失败!");
         }

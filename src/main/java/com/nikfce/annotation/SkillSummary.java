@@ -6,13 +6,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 技能码注解,一个技能的唯一标识
- * @author shenzhencheng 2022/3/11
+ * 技能描述
+ * 包含技能码,技能名和技能简介
+ * @author shenzhencheng 2022/3/15
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SkillCode {
+public @interface SkillSummary {
 
-    String value();
+    String code();
+
+    String name();
+
+    String desc() default "这个技能很神秘,什么描述都没有";
 
 }

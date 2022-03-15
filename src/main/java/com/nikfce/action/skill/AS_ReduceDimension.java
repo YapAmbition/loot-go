@@ -3,8 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
-import com.nikfce.annotation.SkillCode;
-import com.nikfce.annotation.SkillName;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -18,12 +17,20 @@ import java.util.stream.Collectors;
  * 降维打击,杨胖的专属技能,对[1]个敌人降低其30%基础防御并造成攻击力的1.2倍伤害
  * @author shenzhencheng 2022/3/10
  */
-@SkillCode("SK_2")
-@SkillName("降维打击")
+@SkillSummary(code = "SK_2", name = "降维打击", desc = "对1个敌人降低其30%基础防御并造成攻击力的1.2倍伤害")
 public class AS_ReduceDimension implements ActiveSKill {
 
-    private String skillName;
+    private final String skillCode;
+    private final String skillName;
+    private final String skillDesc;
     private Looter target;
+
+    public AS_ReduceDimension() {
+        SkillSummary skillSummary = AS_ReduceDimension.class.getAnnotation(SkillSummary.class);
+        this.skillCode = skillSummary.code();
+        this.skillName = skillSummary.name();
+        this.skillDesc = skillSummary.desc();
+    }
 
     @Override
     public List<Looter> selectTargets(SkillContext skillContext) {
@@ -39,7 +46,7 @@ public class AS_ReduceDimension implements ActiveSKill {
         double damage = me.currentAttack() * 1.2;
         double downDefence = target.basicDefence() * 0.3;
         boolean strike = me.calCauseStrike();
-        ThreadLocalMap.getRecorder().record_f("%s对%s使出一招降维打击,减少其%s的防御并造成%s的伤害", me.name, target.name, downDefence, damage);
+        ThreadLocalMap.getRecorder().record_f("%s对%s使出一招降维打击,减少其%s的防御并造成%s的伤害", me.getName(), target.getName(), downDefence, damage);
         if (strike) {
             damage = damage * 2.0;
         }
@@ -53,12 +60,18 @@ public class AS_ReduceDimension implements ActiveSKill {
     }
 
     @Override
+    public String code() {
+        return skillCode;
+    }
+
+    @Override
     public String name() {
-        if (skillName == null) {
-            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
-            this.skillName = skillName.value();
-        }
-        return this.skillName;
+        return skillName;
+    }
+
+    @Override
+    public String desc() {
+        return skillDesc;
     }
 
     @Override

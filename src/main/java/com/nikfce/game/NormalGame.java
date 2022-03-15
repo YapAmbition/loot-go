@@ -18,8 +18,6 @@ public class NormalGame {
         LootConfig.init();
         // 注册代码中定义的技能
         SkillRegisterCenter.registerSkillFromSrc();
-        // 注册代码中定义的角色
-        LooterRegisterCenter.registerLooterFromSrc();
         // 注册配置文件中定义的角色
         LooterRegisterCenter.registerLooterFromConfig();
 

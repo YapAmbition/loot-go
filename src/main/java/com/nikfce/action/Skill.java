@@ -25,9 +25,19 @@ public interface Skill {
     boolean canUse(SkillContext skillContext);
 
     /**
+     * 技能唯一码
+     */
+    String code();
+
+    /**
      * 技能名
      */
     String name();
+
+    /**
+     * 技能描述
+     */
+    String desc();
 
     /**
      * 回合结束时收尾工作

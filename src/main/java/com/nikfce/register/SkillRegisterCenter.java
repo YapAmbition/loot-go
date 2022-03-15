@@ -1,8 +1,7 @@
 package com.nikfce.register;
 
 import com.nikfce.action.Skill;
-import com.nikfce.annotation.SkillCode;
-import com.nikfce.annotation.SkillName;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.config.LootConfig;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -21,19 +20,18 @@ public class SkillRegisterCenter {
     private static final Map<String, Class<? extends Skill>> SKILL_MAP = new ConcurrentHashMap<>();
 
     public synchronized static void register(Class<? extends Skill> clazz) {
-        SkillCode skillCode = clazz.getAnnotation(SkillCode.class);
-        if (skillCode == null) {
-            throw new RuntimeException("该技能没有SkillCode注解,请添加!");
+        SkillSummary skillSummary = clazz.getAnnotation(SkillSummary.class);
+        if (skillSummary == null) {
+            throw new RuntimeException("该技能没有SkillSummary注解,请添加!");
         }
-        String code = skillCode.value();
+        String code = skillSummary.code();
         if (code == null) {
-            throw new RuntimeException("SkillCode不允许为null");
+            throw new RuntimeException("SkillSummary.code不允许为null");
         }
 
-        SkillName skillName = clazz.getAnnotation(SkillName.class);
-        String name = skillName.value();
+        String name = skillSummary.name();
         if (name == null) {
-            throw new RuntimeException("SkillName不允许为null");
+            throw new RuntimeException("SkillSummary.name不允许为null");
         }
 
         // 已经注册过的直接跳过
@@ -42,7 +40,7 @@ public class SkillRegisterCenter {
         }
 
         SKILL_MAP.put(code, clazz);
-        LOG.info("成功注册技能: code: {}, name: {}", code, name);
+        LOG.info("成功注册技能: code: {}, name: {}, desc: {}", code, name, skillSummary.desc());
     }
 
     /**
@@ -66,18 +64,13 @@ public class SkillRegisterCenter {
     public static void registerSkillFromSrc() {
         String scanPackage = LootConfig.getInstance().getSkillPackage();
         Reflections reflections = new Reflections(scanPackage);
-        Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(SkillCode.class);
+        Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(SkillSummary.class);
         for (Class<?> clazz : skillSet) {
             if (clazz.isInterface()) {
                 continue;
             }
             SkillRegisterCenter.register((Class<? extends Skill>)clazz);
         }
-    }
-
-    public static void main(String[] args) {
-        LootConfig.init();
-        registerSkillFromSrc();
     }
 
 }

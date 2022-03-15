@@ -70,18 +70,19 @@ public class Flow implements Checkable {
         if (CollectionUtil.isEmpty(conditions)) {
             return true;
         }
-        boolean result = false;
         for (Condition condition : conditions) {
-            result |= satisfyCondition(condition, intrudeContext, scene);
+            if (satisfyCondition(condition, intrudeContext, scene)) {
+                return true;
+            }
         }
-        return result;
+        return false;
     }
 
     /**
      * 是否满足Condition
      */
     private boolean satisfyCondition(Condition condition, IntrudeContext intrudeContext, Scene scene) {
-        return condition.satisfy(intrudeContext, scene, this);
+        return condition.satisfy(intrudeContext, scene);
     }
 
     /**
@@ -90,9 +91,9 @@ public class Flow implements Checkable {
      */
     public boolean executeBattle(IntrudeContext intrudeContext) {
         List<Looter> intruderList = intrudeContext.getIntruders();
-        List<Looter> flowLooters = genFlowLooters();
-        String intruderNames = intruderList.stream().map(a -> a.name).collect(Collectors.joining(","));
-        String flowLooterNames = flowLooters.stream().map(a -> a.name).collect(Collectors.joining(","));
+        List<Looter> flowLooters = genFlowLootersByExp(looters);
+        String intruderNames = intruderList.stream().map(Looter::getName).collect(Collectors.joining(","));
+        String flowLooterNames = flowLooters.stream().map(Looter::getName).collect(Collectors.joining(","));
         ThreadLocalMap.getRecorder().record_f("%s与%s即将进入战斗!", intruderNames, flowLooterNames);
         Battle battle = new Battle(intruderList, flowLooters);
         boolean win = battle.battleStart();
@@ -120,7 +121,7 @@ public class Flow implements Checkable {
             for (Looter flowLooter : flowLooters) {
                 List<Skill> skillList = flowLooter.getSkillList();
                 for (Skill skill : skillList) {
-                    ThreadLocalMap.getRecorder().record_f("> Reward: %s获得技能: [%s] <", looter.name, skill.name());
+                    ThreadLocalMap.getRecorder().record_f("> Reward: %s获得技能: [%s] <", looter.getName(), skill.name());
                     looter.addSkill(skill);
                 }
             }
@@ -130,27 +131,29 @@ public class Flow implements Checkable {
     /**
      * 根据Flow.looters表达式生成Looter实例
      */
-    private List<Looter> genFlowLooters() {
-        for (String exp : looters) {
+    public static List<Looter> genFlowLootersByExp(List<String> exps) {
+        if (CollectionUtil.isEmpty(exps)) {
+            return new ArrayList<>();
+        }
+        List<Looter> result = new ArrayList<>();
+        for (String exp : exps) {
             String[] kv = exp.trim().split(";");
             String looterCode = kv[0];
             String numberExp = kv[1];
             int count = explainNumberExp(numberExp);
-            List<Looter> result = new ArrayList<>();
             for (int i = 0 ; i < count ; i ++) {
                 Looter looter = LooterRegisterCenter.generateLooter(looterCode);
                 result.add(looter);
             }
-            return result;
         }
-        throw new RuntimeException("没有找到looter表达式!" + name);
+        return result;
     }
 
     /**
      * 解析数量表达式,目前只支持整数开闭区间
      * 例如: [1,2], (2, 3], [1, 4)
      */
-    private int explainNumberExp(String exp) {
+    private static int explainNumberExp(String exp) {
         String[] kv = exp.trim().split(",");
         char lc = kv[0].charAt(0);
         char rc = kv[1].charAt(kv[1].length() - 1);
@@ -186,6 +189,30 @@ public class Flow implements Checkable {
         if (CollectionUtil.isEmpty(looters)) {
             throw new RuntimeException("Flow的looters不能为空");
         }
+    }
+
+    /**
+     * 返回一个本对象的深拷贝
+     */
+    public Flow snapshot() {
+        Flow copy = new Flow();
+        copy.setName(name);
+        copy.setPass(isPass);
+        copy.setConditions(copyConditions());
+        if (looters != null) {
+            copy.setLooters(new ArrayList<>(looters));
+        }
+        return copy;
+    }
+
+    private List<Condition> copyConditions() {
+        if (conditions == null) return null;
+        List<Condition> copy = new ArrayList<>();
+        for (Condition condition : conditions) {
+            Condition copyCondition = condition.snapshot();
+            copy.add(copyCondition);
+        }
+        return copy;
     }
 
 }

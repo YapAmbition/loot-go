@@ -33,6 +33,13 @@ public class ThreadLocalMap {
         }
     }
 
+    /**
+     * 使用默认的记录器
+     */
+    public static void useDefaultRecorder() {
+        put(TL_RECORDER, ConsoleRecorder.getInstance());
+    }
+
     private static class MapThreadLocal extends ThreadLocal<Map<Object, Object>> {
         @Override
         protected Map<Object, Object> initialValue() {

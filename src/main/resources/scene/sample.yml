@@ -46,4 +46,21 @@ flow:
           - $random 0.4 # $random是关键字,后边的参数表示概率,这里表示40%的概率满足条件
     looters:
       - LOOTER_119;[3,4]  # 意思是LOOTER_119生成最少3个最多4个
-
+clearCondition: # 该Scene的通关条件,对象列表,多个对象是'或'关系,单个对象中多个表达式是'且'关系
+  - name: 解决所有房间
+    clearDesc: 你解决了所有敌人,办公楼被你重新拉回正轨
+    conditions:
+      - name: 打完所有的房间
+        condition:
+          - $finish _0
+          - $finish _1
+          - $finish _2
+          - $finish _3
+          - $finish _4
+          - $finish _5
+  - name: 打败_5房间
+    clearDesc: 你打败了房间的boss,办公楼被你重新拉回正轨
+    conditions:
+      - name: 打败_5房间
+        condition:
+          - $finish _5

@@ -5,6 +5,7 @@ import com.nikfce.role.Looter;
 import com.nikfce.util.CollectionUtil;
 import com.nikfce.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -38,18 +39,19 @@ public class Condition implements Checkable {
         this.condition = condition;
     }
 
-    public boolean satisfy(IntrudeContext intrudeContext, Scene scene, Flow flow) {
-        boolean result = true;
+    public boolean satisfy(IntrudeContext intrudeContext, Scene scene) {
         for (String exp : condition) {
-            result &= satisfySubCondition(exp, intrudeContext, scene, flow);
+            if (!satisfySubCondition(exp, intrudeContext, scene)) {
+                return false;
+            }
         }
-        return result;
+        return true;
     }
 
     /**
      * 解析子条件表达式
      */
-    private boolean satisfySubCondition(String exp, IntrudeContext intrudeContext, Scene scene, Flow flow) {
+    private boolean satisfySubCondition(String exp, IntrudeContext intrudeContext, Scene scene) {
         String[] kv = exp.trim().split("\\s");
         String keyword = kv[0].trim();
         String value = kv[1].trim();
@@ -105,5 +107,17 @@ public class Condition implements Checkable {
         if (CollectionUtil.isEmpty(condition)) {
             throw new RuntimeException("Condition的condition不能为空");
         }
+    }
+
+    /**
+     * 返回一个本对象的深拷贝
+     */
+    public Condition snapshot() {
+        Condition copy = new Condition();
+        copy.setName(name);
+        if (condition != null) {
+            copy.setCondition(new ArrayList<>(condition));
+        }
+        return copy;
     }
 }

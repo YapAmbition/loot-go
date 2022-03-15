@@ -1,8 +1,9 @@
 package com.nikfce.register;
 
-import com.alibaba.fastjson.JSON;
 import com.nikfce.scene.Scene;
 import com.nikfce.scene.SceneParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SceneRegisterCenter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SceneRegisterCenter.class);
+
     private static final Map<String, Scene> SCENE_MAP = new ConcurrentHashMap<>();
 
     /**
@@ -23,6 +26,7 @@ public class SceneRegisterCenter {
     public synchronized static void register(Scene scene) {
         if (scene != null) {
             SCENE_MAP.put(scene.getName(), scene);
+            LOG.info("成功注册场景: {}", scene.getName());
         }
     }
 
@@ -42,7 +46,7 @@ public class SceneRegisterCenter {
         if (scene == null) {
             throw new RuntimeException("没有注册该场景");
         }
-        return JSON.parseObject(JSON.toJSONString(scene), Scene.class);
+        return scene.snapshot();
     }
 
     /**

@@ -2,7 +2,7 @@ package com.nikfce.role;
 
 import com.nikfce.action.*;
 import com.nikfce.action.skill.AS_NormalAttack;
-import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.stage.RoundContext;
 import com.nikfce.stage.RoundLifecycle;
 import com.nikfce.thread.ThreadLocalMap;
@@ -17,30 +17,35 @@ import java.util.stream.Collectors;
  * 角色的基类
  * @author shenzhencheng 2022/3/1
  */
-public abstract class Looter implements Combative {
+public class Looter implements Combative {
 
     private final Random random = new Random();
 
-    public final String name ;
+    public String name ;
+
+    public String code ;
     // 基础属性
-    protected final Properties basicProperties = new Properties(false);
+    private Properties basicProperties = new Properties(false);
     // 技能影响的属性值
-    protected final Properties effectProperties = new Properties(false);
+    private Properties effectProperties = new Properties(false);
     // 临时属性
-    protected final Properties tmpProperties = new Properties(false);
+    private Properties tmpProperties = new Properties(false);
 
-    private final List<Skill> skillList = new ArrayList<>();
+    private List<Skill> skillList = new ArrayList<>();
 
-    public Looter(String name) {
-        this(name, null);
+    public Looter() {}
+
+    public Looter(String name, String code) {
+        this(name, code, null);
     }
 
-    public Looter(String name, Properties properties) {
-        this(name, properties, null);
+    public Looter(String name, String code, Properties properties) {
+        this(name, code, properties, null);
     }
 
-    public Looter(String name, Properties properties, List<Skill> skillList) {
+    public Looter(String name, String code, Properties properties, List<Skill> skillList) {
         this.name = name;
+        this.code = code;
         this.basicProperties.mergeProperties(properties);
         Properties allLooterBasicProperties = Properties.PropertiesBuilder.create().setMaxHp(200).setHp(200).build();
         this.basicProperties.mergeProperties(allLooterBasicProperties);
@@ -50,6 +55,50 @@ public abstract class Looter implements Combative {
                 addSkill(skill);
             }
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Properties getBasicProperties() {
+        return basicProperties;
+    }
+
+    public void setBasicProperties(Properties basicProperties) {
+        this.basicProperties = basicProperties;
+    }
+
+    public Properties getEffectProperties() {
+        return effectProperties;
+    }
+
+    public Properties getTmpProperties() {
+        return tmpProperties;
+    }
+
+    public void setEffectProperties(Properties effectProperties) {
+        this.effectProperties = effectProperties;
+    }
+
+    public void setTmpProperties(Properties tmpProperties) {
+        this.tmpProperties = tmpProperties;
+    }
+
+    public void setSkillList(List<Skill> skillList) {
+        this.skillList = skillList;
     }
 
     /**
@@ -63,11 +112,11 @@ public abstract class Looter implements Combative {
      * 添加一个技能,添加时通过技能码做去重
      */
     public void addSkill(Skill skill) {
-        SkillCode curSkillCode = skill.getClass().getAnnotation(SkillCode.class);
-        String curCode = curSkillCode.value();
+        SkillSummary curSkillSummary = skill.getClass().getAnnotation(SkillSummary.class);
+        String curCode = curSkillSummary.code();
         for (Skill sk : skillList) {
-            SkillCode skillCode = sk.getClass().getAnnotation(SkillCode.class);
-            String code = skillCode.value();
+            SkillSummary skillSummary = sk.getClass().getAnnotation(SkillSummary.class);
+            String code = skillSummary.code();
             if (code.equalsIgnoreCase(curCode)) {
                 return ;
             }
@@ -133,7 +182,7 @@ public abstract class Looter implements Combative {
      * 基础体质
      */
     public double basicPhysique() {
-        return basicProperties.physique;
+        return basicProperties.getPhysique();
     }
 
     /**
@@ -198,12 +247,12 @@ public abstract class Looter implements Combative {
         SkillContext preSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, roundContext.targets, null);
         List<Looter> targets = activeSKill.selectTargets(preSkillContext);
 
-        ThreadLocalMap.getRecorder().record_f(name + "决定对" + targets.stream().map(i -> i.name).collect(Collectors.joining(",")) + "使用" + activeSKill.name());
+        ThreadLocalMap.getRecorder().record_f(name + "决定对" + targets.stream().map(Looter::getName).collect(Collectors.joining(",")) + "使用" + activeSKill.name());
 
         SkillContext actualSkillContext = new SkillContext(RoundLifecycle.BEFORE_ATTACK, this, targets, null);
         if (activeSKill instanceof IntensifyActiveSkill) {
             Effect effect = activeSKill.handle(actualSkillContext);
-            intensified(this, effect);
+            intensified(this, activeSKill.name(), effect);
         } else {
             passiveSkillAffect(actualSkillContext);
             Effect effect = activeSKill.handle(actualSkillContext);
@@ -219,7 +268,7 @@ public abstract class Looter implements Combative {
 
     @Override
     public void beAttack(Looter attacker, Effect effect) {
-        ThreadLocalMap.getRecorder().record_f(name + "受到了来自" + attacker.name + "的攻击");
+        ThreadLocalMap.getRecorder().record_f(name + "受到了来自" + attacker.getName() + "的攻击");
 
         SkillContext skillContext = new SkillContext(RoundLifecycle.BEFORE_BE_ATTACK, this, Collections.singletonList(attacker), effect);
         passiveSkillAffect(skillContext);
@@ -227,7 +276,7 @@ public abstract class Looter implements Combative {
         // 计算角色的闪避值,并进行闪避判定
         double dodge = currentDodge();
         if (random.nextInt(100) < dodge) {
-            ThreadLocalMap.getRecorder().record_f("%s闪过了%s攻击,自己竟毫发未损!", name, attacker.name);
+            ThreadLocalMap.getRecorder().record_f("%s闪过了%s攻击,自己竟毫发未损!", name, attacker.getName());
         } else {
             // 计算并应用伤害,返回实际造成的伤害
             Effect actualEffect = calAndApplyEffect(skillContext);
@@ -236,7 +285,7 @@ public abstract class Looter implements Combative {
             passiveSkillAffect(actualSkillContext);
 
             if (actualEffect.strike) {
-                ThreadLocalMap.getRecorder().record_f("%s的这次攻击竟然产生了暴击!", attacker.name);
+                ThreadLocalMap.getRecorder().record_f("%s的这次攻击竟然产生了暴击!", attacker.getName());
             }
             ThreadLocalMap.getRecorder().record_f(name + "最终受到" + actualEffect.properties.hp + "点伤害");
 
@@ -252,13 +301,42 @@ public abstract class Looter implements Combative {
     }
 
     /**
+     * 返回一份基础属性的复制
+     */
+    public Properties copyBasicProperties() {
+        Properties properties = new Properties(false);
+        properties.mergeProperties(basicProperties);
+        return properties;
+    }
+
+    /**
+     * 返回一份技能影响属性的复制
+     */
+    public Properties copyEffectProperties() {
+        Properties properties = new Properties(false);
+        properties.mergeProperties(effectProperties);
+        return properties;
+    }
+
+    /**
+     * 返回一份临时属性的复制
+     */
+    public Properties copyTmpProperties() {
+        Properties properties = new Properties(false);
+        properties.mergeProperties(tmpProperties);
+        return properties;
+    }
+
+    /**
+     * 强化/弱化技能生效
      * 注意,血量是会超出上限的,如果超过了上限,需要进行扣除,扣除逻辑很简单,把basic,effect,tmp的properties的hp值设置为maxHp即可
      * @param from 谁强化了你
+     * @param byName 来自什么技能/物品
      * @param effect 强化的内容
      */
     @Override
-    public void intensified(Looter from, Effect effect) {
-        ThreadLocalMap.getRecorder().record_f("来自%s的强化技能生效!", from.name);
+    public void intensified(Looter from, String byName, Effect effect) {
+        ThreadLocalMap.getRecorder().record_f("来自%s的%s生效!", from.getName(), byName);
         ThreadLocalMap.getRecorder().record_f(effect.properties.calChangeValueLog());
         effectProperties.mergeProperties(effect.properties);
         if (currentHp() > currentMaxHp()) {

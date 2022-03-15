@@ -35,6 +35,10 @@ public class LootConfig {
      * 技能在源文件中的包名
      */
     private String skillPackage;
+    /**
+     * 用户token在cookie中的key
+     */
+    private String tokenCookieKey = "loot-user-token";
 
 
 

@@ -20,6 +20,98 @@ public class Properties {
     public double dodge = 0.0; // 闪避率
     public double luck = 0.0;
 
+    public Properties() {
+        this(false);
+    }
+
+    public double getPhysique() {
+        return physique;
+    }
+
+    public void setPhysique(double physique) {
+        this.physique = physique;
+    }
+
+    public double getStrength() {
+        return strength;
+    }
+
+    public void setStrength(double strength) {
+        this.strength = strength;
+    }
+
+    public double getAgility() {
+        return agility;
+    }
+
+    public void setAgility(double agility) {
+        this.agility = agility;
+    }
+
+    public double getMaxHp() {
+        return maxHp;
+    }
+
+    public void setMaxHp(double maxHp) {
+        this.maxHp = maxHp;
+    }
+
+    public double getHp() {
+        return hp;
+    }
+
+    public void setHp(double hp) {
+        this.hp = hp;
+    }
+
+    public double getAttack() {
+        return attack;
+    }
+
+    public void setAttack(double attack) {
+        this.attack = attack;
+    }
+
+    public double getDefence() {
+        return defence;
+    }
+
+    public void setDefence(double defence) {
+        this.defence = defence;
+    }
+
+    public double getStrike() {
+        return strike;
+    }
+
+    public void setStrike(double strike) {
+        this.strike = strike;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public double getDodge() {
+        return dodge;
+    }
+
+    public void setDodge(double dodge) {
+        this.dodge = dodge;
+    }
+
+    public double getLuck() {
+        return luck;
+    }
+
+    public void setLuck(double luck) {
+        this.luck = luck;
+    }
+
     /**
      * 是否应用attribute对战斗数值造成影响
      * 一般如果只设置attribute就想让整个属性生效就传true,如果明确不想让属性影响战斗数值就传false

@@ -8,18 +8,25 @@ flow:
   - name: 小花园
     conditions: null
     looters:
-      - LOOTER_OFFICE_2;[1,1] # 种花大妈
-  - name: 办公室2层
+      - LOOTER_OFFICE_2;[2,2] # 种花大妈
+  - name: 办公楼2层
     conditions:
       - name: 打完第一层
         condition:
           - $finish 办公楼1层
     looters:
       - LOOTER_OFFICE_3;[1,1] # 前台小姐姐
-  - name: 办公室3层
+  - name: 办公楼3层
     conditions:
       - name: 打完第二层
         condition:
-          - $finish 办公室2层
+          - $finish 办公楼2层
     looters:
       - LOOTER_OFFICE_4;[1,1] # 至高无上的程序员
+clearCondition:
+  - name: 打完至高无上的程序员
+    clearDesc: 你居然打败了我最得意的下属,至高无上的程序员?事情开始变得有趣起来了,hhhh....
+    conditions:
+      - name: 打完办公楼3层
+        condition:
+          - $finish 办公楼3层

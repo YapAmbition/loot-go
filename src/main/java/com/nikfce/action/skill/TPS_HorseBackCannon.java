@@ -3,8 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
 import com.nikfce.action.TriggerPassiveSkill;
-import com.nikfce.annotation.SkillCode;
-import com.nikfce.annotation.SkillName;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.stage.RoundLifecycle;
@@ -17,15 +16,23 @@ import java.util.stream.Collectors;
 /**
  * 马后炮,谢力的专属技能,
  * 只有在被攻击之后,有50%的概率触发
- * 会在自己受到伤害之后,给对手造成相当于自己力量值2倍的伤害
+ * 会在自己受到伤害之后,给对手造成相当于自己攻击力0.7倍的伤害
  * @author shenzhencheng 2022/3/10
  */
-@SkillCode("SK_9")
-@SkillName("马后炮")
+@SkillSummary(code = "SK_9", name = "马后炮", desc = "在被攻击之后,有50%的概率触发,给对手造成相当于自己攻击力0.7倍的伤害")
 public class TPS_HorseBackCannon implements TriggerPassiveSkill {
 
-    private String skillName;
+    private final String skillCode;
+    private final String skillName;
+    private final String skillDesc;
     private final Random random = new Random();
+
+    public TPS_HorseBackCannon() {
+        SkillSummary skillSummary = TPS_HorseBackCannon.class.getAnnotation(SkillSummary.class);
+        this.skillCode = skillSummary.code();
+        this.skillName = skillSummary.name();
+        this.skillDesc = skillSummary.desc();
+    }
 
     @Override
     public boolean canUse(SkillContext skillContext) {
@@ -33,20 +40,26 @@ public class TPS_HorseBackCannon implements TriggerPassiveSkill {
     }
 
     @Override
+    public String code() {
+        return skillCode;
+    }
+
+    @Override
     public String name() {
-        if (skillName == null) {
-            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
-            this.skillName = skillName.value();
-        }
-        return this.skillName;
+        return skillName;
+    }
+
+    @Override
+    public String desc() {
+        return skillDesc;
     }
 
     @Override
     public void trigger(SkillContext skillContext) {
         List<Looter> looterList = skillContext.enemy;
         Looter me = skillContext.user;
-        double damage = me.currentStrength() * 2.0;
-        ThreadLocalMap.getRecorder().record_f("%s的被动技能[%s]生效,将对攻击他的敌人:%s进行伤害为:%s的反击", me.name, name(), looterList.stream().map(a -> a.name).collect(Collectors.joining(",")), damage);
+        double damage = me.currentAttack() * 0.7;
+        ThreadLocalMap.getRecorder().record_f("%s的被动技能[%s]生效,将对攻击他的敌人:%s进行伤害为:%s的反击", me.getName(), name(), looterList.stream().map(Looter::getName).collect(Collectors.joining(",")), damage);
         for (Looter looter : looterList) {
             boolean strike = me.calCauseStrike();
             Properties properties = Properties.PropertiesBuilder.create().setHp(-(strike ? 2.0 * damage : damage)).build();

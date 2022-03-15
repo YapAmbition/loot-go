@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class DynamicLooter extends Looter {
 
-    public DynamicLooter(String name, Properties properties, List<Skill> skillList) {
-        super(name, properties, skillList);
+    public DynamicLooter(String name, String code, Properties properties, List<Skill> skillList) {
+        super(name, code, properties, skillList);
     }
 }

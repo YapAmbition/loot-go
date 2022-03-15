@@ -46,7 +46,7 @@ public class Battle {
             ThreadLocalMap.getRecorder().record("开始第" + roundCount + "回合");
             // 找到下次行动的角色
             Looter currentLooter = actionPlan.next();
-            ThreadLocalMap.getRecorder().record("当前攻击的角色为:" + currentLooter.name);
+            ThreadLocalMap.getRecorder().record("当前攻击的角色为:" + currentLooter.getName());
             // 角色
             RoundContext roundContext;
             if (isPlayer(currentLooter)) {
@@ -71,10 +71,10 @@ public class Battle {
      */
     private void introduceLooter() {
         for (Looter looter : players) {
-            ThreadLocalMap.getRecorder().record_f("[%s]: %s", looter.name, looter.currentPropertiesSummary());
+            ThreadLocalMap.getRecorder().record_f("[%s]: %s", looter.getName(), looter.currentPropertiesSummary());
         }
         for (Looter looter : enemies) {
-            ThreadLocalMap.getRecorder().record_f("[%s]: %s", looter.name, looter.currentPropertiesSummary());
+            ThreadLocalMap.getRecorder().record_f("[%s]: %s", looter.getName(), looter.currentPropertiesSummary());
         }
     }
 
@@ -107,10 +107,10 @@ public class Battle {
      */
     private void checkLooterStatus() {
         for (Looter looter : players) {
-            ThreadLocalMap.getRecorder().record_f("[%s] : (%s/%s)", looter.name, looter.currentHp(), looter.currentMaxHp());
+            ThreadLocalMap.getRecorder().record_f("[%s] : (%s/%s)", looter.getName(), looter.currentHp(), looter.currentMaxHp());
         }
         for (Looter looter : enemies) {
-            ThreadLocalMap.getRecorder().record_f("[%s] : (%s/%s)", looter.name, looter.currentHp(), looter.currentMaxHp());
+            ThreadLocalMap.getRecorder().record_f("[%s] : (%s/%s)", looter.getName(), looter.currentHp(), looter.currentMaxHp());
         }
     }
 
@@ -124,10 +124,10 @@ public class Battle {
     private boolean handleBattleFinish(BattleFinishEnum battleFinishEnum) {
         switch (battleFinishEnum) {
             case PLAYER_ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(enemies.stream().map(a -> a.name).collect(Collectors.toList())));
+                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(enemies.stream().map(Looter::getName).collect(Collectors.toList())));
                 return false;
             case ENEMIES_ALL_DEAD:
-                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(players.stream().map(a -> a.name).collect(Collectors.toList())));
+                ThreadLocalMap.getRecorder().record_f("%s获胜", JSON.toJSONString(players.stream().map(Looter::getName).collect(Collectors.toList())));
                 return true;
             default:
                 throw new RuntimeException("未知的结束状态:" + battleFinishEnum);

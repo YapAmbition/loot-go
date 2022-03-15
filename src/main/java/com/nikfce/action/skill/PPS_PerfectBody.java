@@ -2,8 +2,7 @@ package com.nikfce.action.skill;
 
 import com.nikfce.action.Effect;
 import com.nikfce.action.PropertiesPassiveSkill;
-import com.nikfce.annotation.SkillCode;
-import com.nikfce.annotation.SkillName;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -13,27 +12,41 @@ import com.nikfce.thread.ThreadLocalMap;
  * 增加20%基础体质
  * @author shenzhencheng 2022/3/11
  */
-@SkillCode("SK_6")
-@SkillName("身体棒棒")
+@SkillSummary(code = "SK_6", name = "身体棒棒", desc = "增加20%基础体质")
 public class PPS_PerfectBody implements PropertiesPassiveSkill {
 
-    private String skillName;
+    private final String skillCode;
+    private final String skillName;
+    private final String skillDesc;
+
+    public PPS_PerfectBody() {
+        SkillSummary skillSummary = PPS_PerfectBody.class.getAnnotation(SkillSummary.class);
+        this.skillCode = skillSummary.code();
+        this.skillName = skillSummary.name();
+        this.skillDesc = skillSummary.desc();
+    }
+
+    @Override
+    public String code() {
+        return skillCode;
+    }
 
     @Override
     public String name() {
-        if (skillName == null) {
-            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
-            this.skillName = skillName.value();
-        }
-        return this.skillName;
+        return skillName;
+    }
+
+    @Override
+    public String desc() {
+        return skillDesc;
     }
 
     @Override
     public void battleStart(Looter myself) {
         double physique = myself.basicPhysique();
         double increment = physique * 0.2;
-        ThreadLocalMap.getRecorder().record_f("%s发动[%s],增加自己%s的体质", myself.name, name(), increment);
+        ThreadLocalMap.getRecorder().record_f("%s发动[%s],增加自己%s的体质", myself.getName(), name(), increment);
         Properties properties = Properties.PropertiesBuilder.create().setPhysique(increment).setApplyAttribute(true).build();
-        myself.intensified(myself, new Effect(properties));
+        myself.intensified(myself, skillName, new Effect(properties));
     }
 }

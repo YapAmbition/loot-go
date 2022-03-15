@@ -1,7 +1,7 @@
 package check;
 
 import com.alibaba.fastjson.JSON;
-import com.nikfce.annotation.SkillCode;
+import com.nikfce.annotation.SkillSummary;
 import org.reflections.Reflections;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,13 +19,13 @@ public class SkillCodeRepetitionCheck {
         Map<String, Set<Class<?>>> map = new HashMap<>();
         String scanPackage = "com.nikfce.action";
         Reflections reflections = new Reflections(scanPackage);
-        Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(SkillCode.class);
+        Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(SkillSummary.class);
         for (Class<?> clazz : skillSet) {
             if (clazz.isInterface()) {
                 continue;
             }
-            SkillCode skillCode = clazz.getAnnotation(SkillCode.class);
-            String code = skillCode.value();
+            SkillSummary skillSummary = clazz.getAnnotation(SkillSummary.class);
+            String code = skillSummary.code();
             map.computeIfAbsent(code, a -> new HashSet<>());
             map.get(code).add(clazz);
         }

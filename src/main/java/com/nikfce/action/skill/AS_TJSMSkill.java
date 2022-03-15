@@ -3,8 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
-import com.nikfce.annotation.SkillCode;
-import com.nikfce.annotation.SkillName;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -17,11 +16,19 @@ import java.util.stream.Collectors;
  * 田忌赛马,李坤专属技能,技能会选取[1]个攻击力最高的敌人为目标,造成1.5倍伤害
  * @author shenzhencheng 2022/3/10
  */
-@SkillCode("SK_4")
-@SkillName("田忌赛马")
+@SkillSummary(code = "SK_4", name = "田忌赛马", desc = "选取1个攻击力最高的敌人为目标,造成1.5倍伤害")
 public class AS_TJSMSkill implements ActiveSKill {
 
-    private String skillName;
+    private final String skillCode;
+    private final String skillName;
+    private final String skillDesc;
+
+    public AS_TJSMSkill() {
+        SkillSummary skillSummary = AS_TJSMSkill.class.getAnnotation(SkillSummary.class);
+        this.skillCode = skillSummary.code();
+        this.skillName = skillSummary.name();
+        this.skillDesc = skillSummary.desc();
+    }
 
     @Override
     public List<Looter> selectTargets(SkillContext skillContext) {
@@ -43,7 +50,7 @@ public class AS_TJSMSkill implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack() * 1.5;
         boolean strike = me.calCauseStrike();
-        ThreadLocalMap.getRecorder().record_f("%s使出一招%s,选取敌方的上等马进行攻击", me.name, name());
+        ThreadLocalMap.getRecorder().record_f("%s使出一招%s,选取敌方的上等马进行攻击", me.getName(), name());
         Properties properties = Properties.PropertiesBuilder.create()
                 .setHp(-(strike ? 2.0 * damage : damage))
                 .build();
@@ -56,11 +63,17 @@ public class AS_TJSMSkill implements ActiveSKill {
     }
 
     @Override
+    public String code() {
+        return skillCode;
+    }
+
+    @Override
     public String name() {
-        if (skillName == null) {
-            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
-            this.skillName = skillName.value();
-        }
-        return this.skillName;
+        return skillName;
+    }
+
+    @Override
+    public String desc() {
+        return skillDesc;
     }
 }

@@ -1,6 +1,5 @@
 package com.nikfce.scene;
 
-import com.alibaba.fastjson.JSON;
 import com.nikfce.config.LootConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +60,6 @@ public class SceneParser {
      * 将某特定文件解析为场景
      */
     public static Scene parse(String filePath) throws FileNotFoundException {
-        LOG.info("开始解析场景: " + filePath);
         FileReader fr = new FileReader(filePath.trim());
         Yaml yaml = new Yaml(new Constructor(Scene.class));
         return yaml.loadAs(fr, Scene.class);

@@ -3,8 +3,7 @@ package com.nikfce.action.skill;
 import com.nikfce.action.ActiveSKill;
 import com.nikfce.action.Effect;
 import com.nikfce.action.SkillContext;
-import com.nikfce.annotation.SkillCode;
-import com.nikfce.annotation.SkillName;
+import com.nikfce.annotation.SkillSummary;
 import com.nikfce.role.Looter;
 import com.nikfce.role.Properties;
 import com.nikfce.thread.ThreadLocalMap;
@@ -18,11 +17,19 @@ import java.util.stream.Collectors;
  * 普通攻击,对随机[1]个敌人造成攻击力100%的伤害
  * @author shenzhencheng 2022/3/10
  */
-@SkillCode("SK_1")
-@SkillName("普通攻击")
+@SkillSummary(code = "SK_1", name = "普通攻击", desc = "对随机1个敌人造成攻击力100%的伤害")
 public class AS_NormalAttack implements ActiveSKill {
 
-    private String skillName;
+    private final String skillCode;
+    private final String skillName;
+    private final String skillDesc;
+
+    public AS_NormalAttack() {
+        SkillSummary skillSummary = AS_NormalAttack.class.getAnnotation(SkillSummary.class);
+        this.skillCode = skillSummary.code();
+        this.skillName = skillSummary.name();
+        this.skillDesc = skillSummary.desc();
+    }
 
     @Override
     public List<Looter> selectTargets(SkillContext skillContext) {
@@ -37,7 +44,7 @@ public class AS_NormalAttack implements ActiveSKill {
         Looter me = skillContext.user;
         double damage = me.currentAttack();
         boolean strike = me.calCauseStrike();
-        ThreadLocalMap.getRecorder().record_f("%s对使出一招普通攻击,这一招一看就有足足%s的威力", me.name, damage);
+        ThreadLocalMap.getRecorder().record_f("%s对使出一招普通攻击,这一招一看就有足足%s的威力", me.getName(), damage);
         if (strike) {
             damage = damage * 2.0;
         }
@@ -53,11 +60,17 @@ public class AS_NormalAttack implements ActiveSKill {
     }
 
     @Override
+    public String code() {
+        return skillCode;
+    }
+
+    @Override
     public String name() {
-        if (skillName == null) {
-            SkillName skillName = AS_NormalAttack.class.getAnnotation(SkillName.class);
-            this.skillName = skillName.value();
-        }
-        return this.skillName;
+        return skillName;
+    }
+
+    @Override
+    public String desc() {
+        return skillDesc;
     }
 }
