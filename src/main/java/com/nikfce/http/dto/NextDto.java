@@ -13,7 +13,8 @@ import java.util.List;
 public class NextDto {
 
     /**
-     * 类型: scene/flow/looter/finish
+     * 类型: scene/flow/looter/lose/allClear
+     * 解释: 选择场景/选择关卡/选择looter/失败/通关
      */
     private String type;
     private String desc;

@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class FlowResponse {
 
-    private boolean isWin;
+    private boolean win;
     private List<String> logs;
 
 }
