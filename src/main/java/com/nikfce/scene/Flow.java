@@ -100,9 +100,10 @@ public class Flow implements Checkable {
         if (win) {
             setPass(true);
             ThreadLocalMap.getRecorder().record_f("%s胜利,即将获得奖励!", intruderNames);
-            reward(intrudeContext, flowLooters);
+            reward(intruderList, flowLooters);
         } else {
-            ThreadLocalMap.getRecorder().record_f("%s失败了,结束游戏!", intruderNames);
+            ThreadLocalMap.getRecorder().record_f("%s失败了,怪物将获得你的技能!", intruderNames);
+            reward(flowLooters, intruderList);
         }
         return win;
     }
@@ -110,19 +111,18 @@ public class Flow implements Checkable {
     /**
      * 奖励机制,现在最简单的奖励就是让每个looter获得每个怪物的技能
      */
-    private void reward(IntrudeContext intrudeContext, List<Looter> flowLooters) {
+    private void reward(List<Looter> winners, List<Looter> losers) {
         ThreadLocalMap.getRecorder().record_f("-------------------------------");
-        ThreadLocalMap.getRecorder().record_f("> Reward: 所有存活的looter将获得敌人的所有技能 <");
-        List<Looter> intruderList = intrudeContext.getIntruders();
-        for (Looter looter : intruderList) {
-            if (looter.isDead()) {
+        ThreadLocalMap.getRecorder().record_f("> Reward: 存活的looter将获得失败者的技能 <");
+        for (Looter winner : winners) {
+            if (winner.isDead()) {
                 continue;
             }
-            for (Looter flowLooter : flowLooters) {
-                List<Skill> skillList = flowLooter.getSkillList();
+            for (Looter loser : losers) {
+                List<Skill> skillList = loser.getSkillList();
                 for (Skill skill : skillList) {
-                    ThreadLocalMap.getRecorder().record_f("> Reward: %s获得技能: [%s] <", looter.getName(), skill.name());
-                    looter.addSkill(skill);
+                    ThreadLocalMap.getRecorder().record_f("> Reward: %s获得技能: [%s] <", winner.getName(), skill.name());
+                    winner.addSkill(skill);
                 }
             }
         }

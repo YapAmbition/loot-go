@@ -95,4 +95,17 @@ public class LooterRegisterCenter {
         return new HashSet<>(LOOTER_MAP.keySet());
     }
 
+    /**
+     * 列出所有用户可以选的looter码
+     */
+    public static Set<String> listCanChoiceLooters() {
+        Set<String> result = new HashSet<>();
+        for (String code : LOOTER_MAP.keySet()) {
+            if (LOOTER_MAP.get(code).isCanChoice()) {
+                result.add(code);
+            }
+        }
+        return result;
+    }
+
 }

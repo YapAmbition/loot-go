@@ -20,6 +20,10 @@ public class UserSpace {
      */
     private User user;
     /**
+     * 一共有3条命
+     */
+    private int chance = 3;
+    /**
      * 当前正在访问的场景,打完flow之后会记录当前Scene
      */
     private String currentScene;
@@ -28,7 +32,7 @@ public class UserSpace {
      */
     private Looter looter;
     /**
-     * 是否失败
+     * 没命了
      */
     private boolean lose = false;
     /**
@@ -45,6 +49,14 @@ public class UserSpace {
             throw new RuntimeException("用户名和用户token不能为空");
         }
         this.user = user;
+    }
+
+    public int getChance() {
+        return chance;
+    }
+
+    public void setChance(int chance) {
+        this.chance = chance;
     }
 
     public void setUser(User user) {
@@ -88,10 +100,24 @@ public class UserSpace {
     }
 
     /**
+     * 重生
+     * 减少一次机会
+     * 重新选择looter
+     * 可以重新选择场景(这里注意,场景中已经被打败的怪物不会再出现的)
+     * @return 如果还有机会则返回true,如果没有机会了则返回false
+     */
+    public boolean reborn() {
+        looter = null;
+        currentScene = null;
+        return chance -- > 0;
+    }
+
+    /**
      * 获得当前对象的深拷贝
      */
     public UserSpace snapshot() {
         UserSpace userSpace = new UserSpace();
+        userSpace.setChance(chance);
         userSpace.setUser(copyUser());
         userSpace.setLooter(copyLooter());
         userSpace.setCurrentScene(currentScene);

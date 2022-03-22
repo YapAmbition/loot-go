@@ -62,10 +62,11 @@ public class LooterConfigParser {
         String[] items = roleStr.split("\\s+");
         LooterDefinition looterDefinition = new LooterDefinition();
         looterDefinition.setCode(items[0].trim());
-        looterDefinition.setName(items[1].trim());
-        looterDefinition.setSkillCodeList(Arrays.asList(items[2].trim().split(",")));
+        looterDefinition.setCanChoice("1".equals(items[1]));
+        looterDefinition.setName(items[2].trim());
+        looterDefinition.setSkillCodeList(Arrays.asList(items[3].trim().split(",")));
 
-        String[] propertyStr = items[3].trim().split(",");
+        String[] propertyStr = items[4].trim().split(",");
         Properties.PropertiesBuilder propertiesBuilder = Properties.PropertiesBuilder.create();
         for (int i = 0 ; i < propertyStr.length ; i ++) {
             String property = propertyStr[i];

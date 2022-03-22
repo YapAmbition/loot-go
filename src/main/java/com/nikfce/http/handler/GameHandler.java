@@ -7,7 +7,6 @@ import com.nikfce.http.request.FlowResponse;
 import com.nikfce.http.user.TokenGenerator;
 import com.nikfce.http.user.User;
 import com.nikfce.http.util.CookieUtil;
-import com.nikfce.recoder.BufferRecorder;
 import com.nikfce.recoder.ListBufferRecorder;
 import com.nikfce.register.LooterRegisterCenter;
 import com.nikfce.register.SceneRegisterCenter;
@@ -59,10 +58,15 @@ public class GameHandler {
      */
     public NextDto next() {
         UserSpace userSpace = getUserSpace();
-        // 先判断是否选了Looter,如果没选则返回角色列表让用户选择
-        if (userSpace.getLooter() == null) {
+        if (userSpace.isLose()) {
+            NextDto nextDto = new NextDto();
+            nextDto.setType("lose");
+            nextDto.setDesc(String.format("很遗憾, %s, 你就是这样不堪一击? hhhhh...", userSpace.getUser().getName()));
+            return nextDto;
+        } else if (userSpace.getLooter() == null) {
+            // 判断是否选了Looter,如果没选则返回角色列表让用户选择
             List<LooterDTO> looterDTOList = new ArrayList<>();
-            Set<String> looterCodeSet = LooterRegisterCenter.listLooters();
+            Set<String> looterCodeSet = LooterRegisterCenter.listCanChoiceLooters();
             for (String looterCode : looterCodeSet) {
                 Looter looter = LooterRegisterCenter.generateLooter(looterCode);
                 LooterDTO looterDTO = LooterDTO.generateByLooter(looter);
@@ -72,11 +76,6 @@ public class GameHandler {
             nextDto.setType("looter");
             nextDto.setDesc("选择属于你的Looter");
             nextDto.setLooterList(looterDTOList);
-            return nextDto;
-        } else if (userSpace.isLose()) {
-            NextDto nextDto = new NextDto();
-            nextDto.setType("lose");
-            nextDto.setDesc(String.format("很遗憾, %s, 你就是这样不堪一击? hhhhh...", userSpace.getUser().getName()));
             return nextDto;
         } else if (allClear(userSpace)) {
             // 如果所有Scene都被清理了
@@ -108,6 +107,26 @@ public class GameHandler {
             }
             List<FlowDTO> flowDTOList = new ArrayList<>();
             IntrudeContext intrudeContext = new IntrudeContext(Collections.singletonList(userSpace.getLooter()));
+
+            String desc = currentScene.clearScene(intrudeContext);
+            if (desc != null) {
+                userSpace.setCurrentScene(null);
+                GameArchive.save(userSpace);
+
+                // 如果关卡被清理完了,让用户重新选择scene
+                List<SceneDTO> sceneDTOList = new ArrayList<>();
+                for (String sceneName : SceneRegisterCenter.showSceneList()) {
+                    Scene scene = SceneRegisterCenter.generateScene(sceneName);
+                    SceneDTO sceneDTO = SceneDTO.generateByScene(scene);
+                    sceneDTOList.add(sceneDTO);
+                }
+                NextDto nextDto = new NextDto();
+                nextDto.setType("scene");
+                nextDto.setDesc("刚才的关卡已经被你清理完了,选择要突突的地图");
+                nextDto.setSceneList(sceneDTOList);
+                return nextDto;
+            }
+
             List<Flow> flowList = currentScene.nextFlows(intrudeContext);
             for (Flow flow : flowList) {
                 FlowDTO flowDTO = FlowDTO.generateByFlow(flow);
@@ -194,8 +213,14 @@ public class GameHandler {
                             logs.add(desc);
                         }
                     } else {
-                        userSpace.setLose(true);
+                        // 失败以后,用户需要重新选择looter
                         logs.add(String.format("很遗憾,%s,你就是这样不堪一击,hhhhh...", userSpace.getUser().getName()));
+                        if (userSpace.reborn()) {
+                            logs.add(String.format("你还有%s次机会,现在敌人变得更强大了,谨慎行动吧....", userSpace.getChance()));
+                        } else {
+                            userSpace.setLose(true);
+                            logs.add("到此为止吧,你已经没有机会了,抱着遗憾离开吧...");
+                        }
                     }
                     GameArchive.save(userSpace);
                     FlowResponse flowResponse = new FlowResponse();

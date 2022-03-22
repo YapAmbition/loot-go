@@ -19,6 +19,12 @@ public class LooterDefinition {
     private String code;
 
     /**
+     * 用户是否可选
+     * 1表示可选,0表示不可选
+     */
+    private boolean canChoice;
+
+    /**
      * 初始属性
      */
     private Properties basicProperties;
@@ -58,5 +64,13 @@ public class LooterDefinition {
 
     public void setSkillCodeList(List<String> skillCodeList) {
         this.skillCodeList = skillCodeList;
+    }
+
+    public boolean isCanChoice() {
+        return canChoice;
+    }
+
+    public void setCanChoice(boolean canChoice) {
+        this.canChoice = canChoice;
     }
 }
