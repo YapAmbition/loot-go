@@ -12,6 +12,8 @@ import java.util.List;
 public class FlowResponse {
 
     private boolean win;
+    // 剩余几条命
+    private int remainHealth;
     private List<String> logs;
 
 }

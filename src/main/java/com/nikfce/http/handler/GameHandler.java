@@ -206,6 +206,7 @@ public class GameHandler {
                     GameArchive.save(userSpace);
                     FlowResponse flowResponse = new FlowResponse();
                     flowResponse.setWin(win);
+                    flowResponse.setRemainHealth(userSpace.getChance());
                     flowResponse.setLogs(logs);
                     return flowResponse;
                 }

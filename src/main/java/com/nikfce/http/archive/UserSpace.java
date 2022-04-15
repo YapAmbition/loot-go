@@ -109,7 +109,7 @@ public class UserSpace {
     public boolean reborn() {
         looter = null;
         currentScene = null;
-        return chance -- > 0;
+        return --chance > 0;
     }
 
     /**

@@ -268,7 +268,7 @@ public class Looter implements Combative {
 
     @Override
     public void beAttack(Looter attacker, Effect effect) {
-        ThreadLocalMap.getRecorder().record_f("[%s]收到了来自[%s]的攻击", name, attacker.getName());
+        ThreadLocalMap.getRecorder().record_f("[%s]受到了来自[%s]的攻击", name, attacker.getName());
 
         SkillContext skillContext = new SkillContext(RoundLifecycle.BEFORE_BE_ATTACK, this, Collections.singletonList(attacker), effect);
         passiveSkillAffect(skillContext);
