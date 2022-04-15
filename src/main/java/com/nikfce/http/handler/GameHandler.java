@@ -108,25 +108,6 @@ public class GameHandler {
             List<FlowDTO> flowDTOList = new ArrayList<>();
             IntrudeContext intrudeContext = new IntrudeContext(Collections.singletonList(userSpace.getLooter()));
 
-            String desc = currentScene.clearScene(intrudeContext);
-            if (desc != null) {
-                userSpace.setCurrentScene(null);
-                GameArchive.save(userSpace);
-
-                // 如果关卡被清理完了,让用户重新选择scene
-                List<SceneDTO> sceneDTOList = new ArrayList<>();
-                for (String sceneName : SceneRegisterCenter.showSceneList()) {
-                    Scene scene = SceneRegisterCenter.generateScene(sceneName);
-                    SceneDTO sceneDTO = SceneDTO.generateByScene(scene);
-                    sceneDTOList.add(sceneDTO);
-                }
-                NextDto nextDto = new NextDto();
-                nextDto.setType("scene");
-                nextDto.setDesc("刚才的关卡已经被你清理完了,选择要突突的地图");
-                nextDto.setSceneList(sceneDTOList);
-                return nextDto;
-            }
-
             List<Flow> flowList = currentScene.nextFlows(intrudeContext);
             for (Flow flow : flowList) {
                 FlowDTO flowDTO = FlowDTO.generateByFlow(flow);
@@ -206,7 +187,7 @@ public class GameHandler {
                     ThreadLocalMap.useDefaultRecorder();
                     if (win) {
                         f.setPass(true);
-                        // 检查是否所有房间都被打完了,如果是则退出Scene
+                        // 检查是否满足Scene通关条件,如果是则退出Scene
                         String desc = scene.clearScene(intrudeContext);
                         if (desc != null) {
                             userSpace.setCurrentScene(null);
