@@ -7,19 +7,15 @@
   <formats>
     <format>zip</format>
   </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
+  <includeBaseDirectory>true</includeBaseDirectory>
   <fileSets>
     <fileSet>
       <directory>script/</directory>
       <outputDirectory>/</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>src/main/resources/looter/</directory>
+      <directory>src/main/resources/</directory>
       <outputDirectory>conf/</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>src/main/resources/scene/</directory>
-      <outputDirectory>scene/</outputDirectory>
     </fileSet>
   </fileSets>
 

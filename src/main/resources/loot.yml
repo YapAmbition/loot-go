@@ -1,4 +1,4 @@
-sceneDir: /Users/shenzhencheng/Documents/github/loot-go/src/main/resources/scene/
+sceneDir: ./scene/
 looterPackage: com.nikfce.role
-looterDir: /Users/shenzhencheng/Documents/github/loot-go/src/main/resources/looter/
+looterDir: ./looter/
 skillPackage: com.nikfce.action

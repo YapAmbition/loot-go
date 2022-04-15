@@ -1,23 +1,18 @@
 package com.nikfce.config;
 
-import com.nikfce.scene.Scene;
 import lombok.Data;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * @author shenzhencheng 2022/3/12
  */
 @Data
 public class LootConfig {
-
-    /**
-     * 配置文件的目录
-     */
-    private static final String LOOT_CONF_PATH = "/Users/shenzhencheng/Documents/github/loot-go/src/main/resources/loot.yml";
 
     /**
      * 场景定义的目录
@@ -56,7 +51,7 @@ public class LootConfig {
 
     public static LootConfig getInstance() {
         if (INSTANCE == null) {
-            throw new RuntimeException("未执行配置初始化:" + LOOT_CONF_PATH);
+            throw new RuntimeException("未执行配置初始化");
         }
         return INSTANCE;
     }
@@ -65,11 +60,12 @@ public class LootConfig {
      * 初始化配置
      */
     public synchronized static void init() {
-        try(FileReader fr = new FileReader(LOOT_CONF_PATH)) {
+        URL url = LootConfig.class.getClassLoader().getResource("loot.yml");
+        try(FileReader fr = new FileReader(url.getFile())) {
             Yaml yaml = new Yaml(new Constructor(LootConfig.class));
             INSTANCE = yaml.loadAs(fr, LootConfig.class);
         } catch (IOException e) {
-            throw new RuntimeException("初始化配置文件失败: " + LOOT_CONF_PATH, e);
+            throw new RuntimeException("初始化配置文件失败", e);
         }
     }
 
