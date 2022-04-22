@@ -9,6 +9,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,11 @@ public class SceneParser {
         List<Scene> result = new ArrayList<>();
         String sceneDir = LootConfig.getInstance().getSceneDir();
         File file = new File(sceneDir);
+        if (!file.exists()) {
+            URL url = LootConfig.class.getClassLoader().getResource(sceneDir);
+            sceneDir = url.getFile();
+            file = new File(sceneDir);
+        }
         if (file.exists() && file.isDirectory()) {
             String[] filenames = file.list();
             if (filenames == null) {

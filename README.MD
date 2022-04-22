@@ -1,3 +1,26 @@
+## 本地部署流程
+1. clone本项目并进入目录
+```
+git clone git@github.com:YapAmbition/loot-go.git
+cd loot-go
+```
+2. 编译项目
+```
+mvn clean package -Dmaven.test.skip=true
+```
+3. 解压
+```
+cd target
+unzip loot-go.zip
+```
+4. 执行
+```
+cd loot-go
+bash ./start.sh
+```
+
+## 前端项目请移步[loot-go-front](git@github.com:YapAmbition/loot-go-front.git?_blank)
+
 ## 求救:大家快来帮忙一起设计角色和地图
 ### 角色设计方法
 设计角色需要先看技能表,然后创建符合一定格式的`xxx.definition`文件并提pr
@@ -116,3 +139,9 @@
 - 新增用户复活功能,总共能复活3次,用户战败后怪物会获得用户所使用looter的能力
 - 优化场景,当一个场景都被清理完后,提示用户重新选择场景
 - 修改looter定义文件,现在可以定义用户是否可以使用该looter
+
+### [v1.5.3]:
+
+- 修复怪物胜利后不能获得技能的问题
+- 日志展示时不再展示普通攻击技能
+- 修改looter和scene的注册引擎,通过classpath获取配置文件,使得在部署时不再需要修改loot.yml的路径

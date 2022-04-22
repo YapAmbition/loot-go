@@ -1,4 +1,2 @@
 sceneDir: ./scene/
-looterPackage: com.nikfce.role
 looterDir: ./looter/
-skillPackage: com.nikfce.action

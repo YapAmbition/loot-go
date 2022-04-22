@@ -1,6 +1,7 @@
 package com.nikfce.scene;
 
 import com.nikfce.action.Skill;
+import com.nikfce.action.skill.AS_NormalAttack;
 import com.nikfce.register.LooterRegisterCenter;
 import com.nikfce.role.Looter;
 import com.nikfce.stage.Battle;
@@ -26,6 +27,7 @@ public class Flow implements Checkable {
     private List<Condition> conditions; // 多个Condition对象是或关系
     private List<String> looters;
     private boolean isPass = false; // 这个Flow是否已经被打过了
+    private List<Looter> curLooters ; // 创建出来的Looter
 
     public String getName() {
         return name;
@@ -91,7 +93,7 @@ public class Flow implements Checkable {
      */
     public boolean executeBattle(IntrudeContext intrudeContext) {
         List<Looter> intruderList = intrudeContext.getIntruders();
-        List<Looter> flowLooters = genFlowLootersByExp(looters);
+        List<Looter> flowLooters = genBattleLooters();
         String intruderNames = intruderList.stream().map(Looter::getName).collect(Collectors.joining(","));
         String flowLooterNames = flowLooters.stream().map(Looter::getName).collect(Collectors.joining(","));
         ThreadLocalMap.getRecorder().record_f("%s与%s即将进入战斗!", intruderNames, flowLooterNames);
@@ -109,6 +111,17 @@ public class Flow implements Checkable {
     }
 
     /**
+     * 生成战斗的Looter,如果是第一次进入战斗则通过表达式生成,之后就直接用生成的looter
+     * 这样不是每次都用表达式生成的话,如果looter胜利了,它就是可以获得技能的
+     */
+    private List<Looter> genBattleLooters() {
+        if (curLooters == null) {
+            curLooters = genFlowLootersByExp(looters);
+        }
+        return curLooters;
+    }
+
+    /**
      * 奖励机制,现在最简单的奖励就是让每个looter获得每个怪物的技能
      */
     private void reward(List<Looter> winners, List<Looter> losers) {
@@ -121,6 +134,9 @@ public class Flow implements Checkable {
             for (Looter loser : losers) {
                 List<Skill> skillList = loser.getSkillList();
                 for (Skill skill : skillList) {
+                    if (skill instanceof AS_NormalAttack) {
+                        continue;
+                    }
                     ThreadLocalMap.getRecorder().record_f("> Reward: %s获得技能: [%s] <", winner.getName(), skill.name());
                     winner.addSkill(skill);
                 }

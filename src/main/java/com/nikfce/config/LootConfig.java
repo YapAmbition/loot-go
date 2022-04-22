@@ -19,17 +19,9 @@ public class LootConfig {
      */
     private String sceneDir;
     /**
-     * looter角色在源文件的包名
-     */
-    private String looterPackage;
-    /**
      * 动态配置looter的配置文件目录
      */
     private String looterDir;
-    /**
-     * 技能在源文件中的包名
-     */
-    private String skillPackage;
     /**
      * 用户token在cookie中的key
      */

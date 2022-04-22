@@ -13,7 +13,7 @@ import java.util.Set;
 public class ListBufferRecorder implements Recorder {
 
     // buffer列表最大条数
-    private int maxBufferSize = 2500;
+    private int maxBufferSize = 10_000;
 
     private final List<String> buffer = new ArrayList<>();
 

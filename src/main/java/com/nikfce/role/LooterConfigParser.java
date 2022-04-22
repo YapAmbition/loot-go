@@ -5,6 +5,7 @@ import com.nikfce.util.CollectionUtil;
 import com.nikfce.util.StringUtil;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -30,6 +31,11 @@ public class LooterConfigParser {
         Set<String> looterCodeSet = new HashSet<>(); // 用来判断文件中定义的角色是否存在角色码不唯一的请看
         String looterDir = LootConfig.getInstance().getLooterDir();
         File file = new File(looterDir);
+        if (!file.exists()) {
+            URL url = LootConfig.class.getClassLoader().getResource(looterDir);
+            looterDir = url.getFile();
+            file = new File(looterDir);
+        }
         if (file.exists() && file.isDirectory()) {
             String[] filenames = file.list();
             if (filenames == null) {

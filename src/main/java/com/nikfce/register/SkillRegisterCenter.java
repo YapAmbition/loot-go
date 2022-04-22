@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SkillRegisterCenter {
 
     private static final Logger LOG = LoggerFactory.getLogger(SkillRegisterCenter.class);
+    private static final String SKILL_PACKAGE = "com.nikfce.action";
     private static final Map<String, Class<? extends Skill>> SKILL_MAP = new ConcurrentHashMap<>();
 
     public synchronized static void register(Class<? extends Skill> clazz) {
@@ -62,8 +63,7 @@ public class SkillRegisterCenter {
      * 注册源文件中的技能
      */
     public static void registerSkillFromSrc() {
-        String scanPackage = LootConfig.getInstance().getSkillPackage();
-        Reflections reflections = new Reflections(scanPackage);
+        Reflections reflections = new Reflections(SKILL_PACKAGE);
         Set<Class<?>> skillSet = reflections.getTypesAnnotatedWith(SkillSummary.class);
         for (Class<?> clazz : skillSet) {
             if (clazz.isInterface()) {
